@@ -5390,5 +5390,19 @@ function getMusics() {
             name:"Queen + I'm Every Woman",
             artist:"Jessie J"
         },
+        {
+            id:771,
+            genre:"Western Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/desertrose_sting.mp3?raw=true",
+            name:"Desert Rose",
+            artist:"Sting"
+        },
+        {
+            id:772,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/meilewoniyiranyongyoutaiyang_huangxiaoyun.mp3?raw=true",
+            name:"没了我你依然拥有太阳",
+            artist:"黄霄云"
+        },
     ]
 }
