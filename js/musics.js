@@ -5404,5 +5404,12 @@ function getMusics() {
             name:"没了我你依然拥有太阳",
             artist:"黄霄云"
         },
+        {
+            id:773,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/xiadehuan_qiuyouju.mp3?raw=true",
+            name:"夏日的呼唤 夏の喚く",
+            artist:"邱有句"
+        },
     ]
 }
