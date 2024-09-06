@@ -5411,5 +5411,19 @@ function getMusics() {
             name:"夏日的呼唤 夏の喚く",
             artist:"邱有句"
         },
+        {
+            id:774,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/papillon_haya.mp3?raw=true",
+            name:"Papillon",
+            artist:"HAYA"
+        },
+        {
+            id:775,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/feixiangdeying_haya.mp3?raw=true",
+            name:"飞翔的鹰",
+            artist:"HAYA"
+        },
     ]
 }
