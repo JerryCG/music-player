@@ -5425,5 +5425,12 @@ function getMusics() {
             name:"飞翔的鹰",
             artist:"HAYA"
         },
+        {
+            id:776,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/xingguang_zhangliangying.mp3?raw=true",
+            name:"星光",
+            artist:"张靓颖"
+        },
     ]
 }
