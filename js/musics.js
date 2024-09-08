@@ -5432,5 +5432,75 @@ function getMusics() {
             name:"星光",
             artist:"张靓颖"
         },
+        {
+            id:777,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/tears_thedaydream.mp3?raw=true",
+            name:"Tears",
+            artist:"The Daydream"
+        },
+        {
+            id:778,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/crystalrainbow_thedaydream.mp3?raw=true",
+            name:"Crystal Rainbow",
+            artist:"The Daydream"
+        },
+        {
+            id:779,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/littlecomfort_thedaydream.mp3?raw=true",
+            name:"Little Comfort",
+            artist:"The Daydream"
+        },
+        {
+            id:780,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/gardeninthesky_thedaydream.mp3?raw=true",
+            name:"Garden In the Sky",
+            artist:"The Daydream"
+        },
+        {
+            id:781,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/applemint_thedaydream.mp3?raw=true",
+            name:"Applemint",
+            artist:"The Daydream"
+        },
+        {
+            id:782,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/lovepleasestay_thedaydream.mp3?raw=true",
+            name:"Love, please stay",
+            artist:"The Daydream"
+        },
+        {
+            id:783,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/fresh_thedaydream.mp3?raw=true",
+            name:"Fresh",
+            artist:"The Daydream"
+        },
+        {
+            id:784,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/djunityyyremixsantuy_djali.mp3?raw=true",
+            name:"DJ Unityy Remix Santuy",
+            artist:"DJ Ali"
+        },
+        {
+            id:785,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/exhortation_davevillanodreammessage.mp3?raw=true",
+            name:"Exhortation (Dream Message)",
+            artist:"Dave Villano"
+        },
+        {
+            id:786,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/oasis_davevillanorelax.mp3?raw=true",
+            name:"Oasis (Relax)",
+            artist:"Dave Villano"
+        },
     ]
 }
