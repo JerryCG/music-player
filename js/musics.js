@@ -5491,12 +5491,26 @@ function getMusics() {
         {
             id:785,
             genre:"Light Music",
-            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/exhortation_davevillanodreammessage.mp3?raw=true",
-            name:"Exhortation (Dream Message)",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/exhortation_davevillanodreammassage.mp3?raw=true",
+            name:"Exhortation (Dream Massage)",
             artist:"Dave Villano"
         },
         {
             id:786,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/exhortation_davevillanorelax.mp3?raw=true",
+            name:"Exhortation (Relax)",
+            artist:"Dave Villano"
+        },
+        {
+            id:787,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/oasis_davevillanodreammassage.mp3?raw=true",
+            name:"Oasis (Dream Massage)",
+            artist:"Dave Villano"
+        },
+        {
+            id:788,
             genre:"Light Music",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/oasis_davevillanorelax.mp3?raw=true",
             name:"Oasis (Relax)",
