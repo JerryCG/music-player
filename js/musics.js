@@ -5516,5 +5516,117 @@ function getMusics() {
             name:"Oasis (Relax)",
             artist:"Dave Villano"
         },
+        {
+            id:789,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/beyondthemist_davevillanodreammassage.mp3?raw=true",
+            name:"Beyond the Mist (Dream Massage)",
+            artist:"Dave Villano"
+        },
+        {
+            id:790,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/beyondthemist_davevillanorelax.mp3?raw=true",
+            name:"Beyond the Mist (Relax)",
+            artist:"Dave Villano"
+        },
+        {
+            id:791,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/highroad_davevillanodreammassage.mp3?raw=true",
+            name:"High Road (Dream Massage)",
+            artist:"Dave Villano"
+        },
+        {
+            id:792,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/highroad_davevillanorelax.mp3?raw=true",
+            name:"High Road (Relax)",
+            artist:"Dave Villano"
+        },
+        {
+            id:793,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/peacefulbells_davevillanodreammassage.mp3?raw=true",
+            name:"Peaceful Bells (Dream Massage)",
+            artist:"Dave Villano"
+        },
+        {
+            id:794,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/peacefulbells_davevillanorelax.mp3?raw=true",
+            name:"Peaceful Bells (Relax)",
+            artist:"Dave Villano"
+        },
+        {
+            id:795,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/angels_davevillanodreammassage.mp3?raw=true",
+            name:"Angels (Dream Massage)",
+            artist:"Dave Villano"
+        },
+        {
+            id:796,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/angels_davevillanorelax.mp3?raw=true",
+            name:"Angels (Relax)",
+            artist:"Dave Villano"
+        },
+        {
+            id:797,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/abovetheclouds_davevillanodreammassage.mp3?raw=true",
+            name:"Above the Clouds (Dream Massage)",
+            artist:"Dave Villano"
+        },
+        {
+            id:798,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/abovetheclouds_davevillanorelax.mp3?raw=true",
+            name:"Above the Clouds (Relax)",
+            artist:"Dave Villano"
+        },
+        {
+            id:799,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/quietguitar_davevillanodreammassage.mp3?raw=true",
+            name:"Quiet Guitar (Dream Massage)",
+            artist:"Dave Villano"
+        },
+        {
+            id:800,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/quietguitar_davevillanorelax.mp3?raw=true",
+            name:"Quiet Guitar (Relax)",
+            artist:"Dave Villano"
+        },
+        {
+            id:801,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/majesticpiano_davevillanodreammassage.mp3?raw=true",
+            name:"Majestic Piano (Dream Massage)",
+            artist:"Dave Villano"
+        },
+        {
+            id:802,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/majesticpiano_davevillanorelax.mp3?raw=true",
+            name:"Majestic Piano (Relax)",
+            artist:"Dave Villano"
+        },
+        {
+            id:803,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/riveroflife_davevillanodreammassage.mp3?raw=true",
+            name:"River of Life (Dream Massage)",
+            artist:"Dave Villano"
+        },
+        {
+            id:804,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/riveroflife_davevillanorelax.mp3?raw=true",
+            name:"River of Life (Relax)",
+            artist:"Dave Villano"
+        },
     ]
 }
