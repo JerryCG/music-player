@@ -5628,5 +5628,19 @@ function getMusics() {
             name:"River of Life (Relax)",
             artist:"Dave Villano"
         },
+        {
+            id:805,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/qingkong_guifeng.mp3?raw=true",
+            name:"青空",
+            artist:"轨风"
+        },
+        {
+            id:806,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/yinghualei_snigellin.mp3?raw=true",
+            name:"樱花泪",
+            artist:"Snigellin"
+        },
     ]
 }
