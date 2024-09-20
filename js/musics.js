@@ -3307,7 +3307,7 @@ function getMusics() {
         {
             id:473,
             genre:"Light Music",
-            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/19971998M06_gongqishener.mp3?raw=true",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/19971998m06_gongqishener.mp3?raw=true",
             name:"1997-1998 M06",
             artist:"宮崎慎二"
         },
@@ -5641,6 +5641,34 @@ function getMusics() {
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/yinghualei_snigellin.mp3?raw=true",
             name:"樱花泪",
             artist:"Snigellin"
+        },
+        {
+            id:807,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/carolanswelcome_patrickball.mp3?raw=true",
+            name:"Carolan's Welcome",
+            artist:"Patrick Ball"
+        },
+        {
+            id:808,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/lightforest_drnckk.mp3?raw=true",
+            name:"Light Forest",
+            artist:"Dr. Nckk"
+        },
+        {
+            id:809,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/gududexunli_chuanjingxianci.mp3?raw=true",
+            name:"孤独な巡礼 (孤独的巡礼) - Fate/Stay Night OST",
+            artist:"川井宪次"
+        },
+        {
+            id:810,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/nowords_riltim.mp3?raw=true",
+            name:"No Words",
+            artist:"RILTIM"
         },
     ]
 }
