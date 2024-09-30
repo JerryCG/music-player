@@ -5670,5 +5670,47 @@ function getMusics() {
             name:"No Words",
             artist:"RILTIM"
         },
+        {
+            id:811,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/breathe_ivantorrent.mp3?raw=true",
+            name:"Breathe (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:812,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/stargazer_ivantorrent.mp3?raw=true",
+            name:"Stargazer (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:813,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/deusexmachina_ivantorrent.mp3?raw=true",
+            name:"Deus Ex Machina (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:814,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/therulesofdestiny_ivantorrent.mp3?raw=true",
+            name:"The Rules of Destiny (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:815,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/lovahurts_ivantorrent.mp3?raw=true",
+            name:"Love Hurts (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:816,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/grief_ivantorrent.mp3?raw=true",
+            name:"Grief (Onyria)",
+            artist:"Ivan Torrent"
+        },
     ]
 }
