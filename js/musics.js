@@ -5701,7 +5701,7 @@ function getMusics() {
         {
             id:815,
             genre:"Epic",
-            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/lovahurts_ivantorrent.mp3?raw=true",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/lovehurts_ivantorrent.mp3?raw=true",
             name:"Love Hurts (Onyria)",
             artist:"Ivan Torrent"
         },
