@@ -5712,5 +5712,33 @@ function getMusics() {
             name:"Grief (Onyria)",
             artist:"Ivan Torrent"
         },
+        {
+            id:817,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/inabsentia_ivantorrent.mp3?raw=true",
+            name:"In Absentia (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:818,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/lionheart_ivantorrent.mp3?raw=true",
+            name:"Lionheart (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:819,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/thecrimsonflight_ivantorrent.mp3?raw=true",
+            name:"The Crimson Flight (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:820,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/mirage_ivantorrent.mp3?raw=true",
+            name:"Mirage (Onyria)",
+            artist:"Ivan Torrent"
+        },
     ]
 }
