@@ -5740,5 +5740,26 @@ function getMusics() {
             name:"Mirage (Onyria)",
             artist:"Ivan Torrent"
         },
+        {
+            id:821,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/bloodbonds_ivantorrent.mp3?raw=true",
+            name:"Blood Bonds (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:822,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/stronghold_ivantorrent.mp3?raw=true",
+            name:"Stronghold (Onyria)",
+            artist:"Ivan Torrent (feat. Lara Ausensi)"
+        },
+        {
+            id:823,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/hudiefuren_huangxiaoyun.mp3?raw=true",
+            name:"蝴蝶夫人",
+            artist:"黄霄云 王赫野"
+        },
     ]
 }
