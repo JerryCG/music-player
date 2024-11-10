@@ -5756,10 +5756,80 @@ function getMusics() {
         },
         {
             id:823,
-            genre:"Epic",
+            genre:"Chinese Pop",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/hudiefuren_huangxiaoyun.mp3?raw=true",
             name:"蝴蝶夫人",
             artist:"黄霄云 王赫野"
+        },
+        {
+            id:824,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/intoeternity_ivantorrent.mp3?raw=true",
+            name:"Into Eternity (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:825,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/neohuman_ivantorrent.mp3?raw=true",
+            name:"Neohuman (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:826,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/ladydragon_ivantorrent.mp3?raw=true",
+            name:"Lady Dragon (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:827,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/melantropie_ivantorrent.mp3?raw=true",
+            name:"Melantropie (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:828,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/hypervellion_ivantorrent.mp3?raw=true",
+            name:"Hypervellion (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:829,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/plenilune_ivantorrent.mp3?raw=true",
+            name:"Plenilune (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:830,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/gaiaslullaby_ivantorrent.mp3?raw=true",
+            name:"Gaia's Lullaby (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:831,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/sonsoffreedom_ivantorrent.mp3?raw=true",
+            name:"Sons of Freedom (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:832,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/resilience_ivantorrent.mp3?raw=true",
+            name:"Resilience (Onyria)",
+            artist:"Ivan Torrent"
+        },
+        {
+            id:833,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/animalibera_ivantorrent.mp3?raw=true",
+            name:"Anima Libera (Onyria)",
+            artist:"Ivan Torrent"
         },
     ]
 }
