@@ -5831,5 +5831,19 @@ function getMusics() {
             name:"Anima Libera (Onyria)",
             artist:"Ivan Torrent"
         },
+        {
+            id:834,
+            genre:"Western Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/fighter_christinaaguilera.mp3?raw=true",
+            name:"Fighter",
+            artist:"Christina Aguilera"
+        },
+        {
+            id:835,
+            genre:"Western Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/theedgeofglory_ladygaga.mp3?raw=true",
+            name:"The Edge Of Glory",
+            artist:"Lady Gaga"
+        },
     ]
 }
