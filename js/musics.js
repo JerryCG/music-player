@@ -5845,5 +5845,12 @@ function getMusics() {
             name:"The Edge Of Glory",
             artist:"Lady Gaga"
         },
+        {
+            id:836,
+            genre:"Light Music",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/nomansland_um.mp3?raw=true",
+            name:"无人之地(No Man's Land)",
+            artist:"UM"
+        },
     ]
 }
