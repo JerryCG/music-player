@@ -5852,5 +5852,19 @@ function getMusics() {
             name:"无人之地(No Man's Land)",
             artist:"UM"
         },
+        {
+            id:837,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/meiguishaonian_wuyuetian.mp3?raw=true",
+            name:"玫瑰少年",
+            artist:"五月天"
+        },
+        {
+            id:838,
+            genre:"Epic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/thecurse_fw.mp3?raw=true",
+            name:"The Curse (The Painted Theme)",
+            artist:"Frederik Wiedmann & Sasha Sibley"
+        },
     ]
 }
