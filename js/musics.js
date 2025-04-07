@@ -5866,5 +5866,12 @@ function getMusics() {
             name:"The Curse (The Painted Theme)",
             artist:"Frederik Wiedmann & Sasha Sibley"
         },
+        {
+            id:839,
+            genre:"Japanese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/buyaorenshu_zard.mp3?raw=true",
+            name:"負けないで(不要认输)",
+            artist:"ZARD (ザード) 坂井泉水"
+        },
     ]
 }
