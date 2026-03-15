@@ -3,7 +3,7 @@ function getMusics() {
         {
             id:1,
             genre:"Chinese Ancientry",
-            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/qianxun_alin.mp3",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/qianxun_alin.mp3?raw=true",
             name:"千寻",
             artist:"A-Lin"
         },
