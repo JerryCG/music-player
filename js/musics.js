@@ -5880,5 +5880,40 @@ function getMusics() {
             name:"丛林法则",
             artist:"谭维维 & 白小白"
         },
+        {
+            id:841,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/huaichibang_meiguimuzidan.mp3?raw=true",
+            name:"坏翅膀",
+            artist:"玫瑰木子弹"
+        },
+        {
+            id:842,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/xinzhiyan_dengziqi.mp3?raw=true",
+            name:"心之焰（《楚乔传》片尾曲）",
+            artist:"邓紫棋"
+        },
+        {
+            id:843,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/changnianweiyang_liuyuxin.mp3?raw=true",
+            name:"长念未央（《大生意人》OST）",
+            artist:"刘雨昕"
+        },
+        {
+            id:844,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/nanianxiatianningjingdehai_wangxinling.mp3?raw=true",
+            name:"那年夏天宁静的海",
+            artist:"王心凌"
+        },
+        {
+            id:845,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/qiandengzhiyue_wxwz.mp3?raw=true",
+            name:"千灯之约",
+            artist:"WXWZ（无限王者团）"
+        },
     ]
 }
