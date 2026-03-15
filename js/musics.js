@@ -5873,5 +5873,12 @@ function getMusics() {
             name:"負けないで(不要认输)",
             artist:"ZARD (ザード) 坂井泉水"
         },
+        {
+            id:840,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/conglinfaze_tanweiweibaixiaobai.mp3?raw=true",
+            name:"丛林法则",
+            artist:"谭维维 & 白小白"
+        },
     ]
 }
