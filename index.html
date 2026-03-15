@@ -509,7 +509,6 @@
         var musicPlayer = document.createElement("audio");
         musicPlayer.controls = true;
         musicPlayer.autoplay = true;
-        musicPlayer.crossOrigin = "anonymous";
         initialRandomID = Math.floor(Math.random() * musics.length) + 1;
         changeMusicURL(initialRandomID);
         musicPlayer.setAttribute("charset", "UTF-8");
