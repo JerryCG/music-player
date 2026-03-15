@@ -5915,5 +5915,12 @@ function getMusics() {
             name:"千灯之约",
             artist:"WXWZ（无限王者团）"
         },
+        {
+            id:846,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/meiguidemingzi_zhangyusheng.mp3?raw=true",
+            name:"玫瑰的名字",
+            artist:"张雨生"
+        },
     ]
 }
