@@ -5889,14 +5889,14 @@ function getMusics() {
         },
         {
             id:842,
-            genre:"Chinese Pop",
+            genre:"Chinese Ancientry",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/xinzhiyan_dengziqi.mp3?raw=true",
             name:"心之焰（《楚乔传》片尾曲）",
             artist:"邓紫棋"
         },
         {
             id:843,
-            genre:"Chinese Pop",
+            genre:"Chinese Ancientry",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/changnianweiyang_liuyuxin.mp3?raw=true",
             name:"长念未央（《大生意人》OST）",
             artist:"刘雨昕"
@@ -5921,6 +5921,27 @@ function getMusics() {
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/meiguidemingzi_zhangyusheng.mp3?raw=true",
             name:"玫瑰的名字",
             artist:"张雨生"
+        },
+        {
+            id:847,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/lang_weilian.mp3?raw=true",
+            name:"狼",
+            artist:"韦礼安"
+        },
+        {
+            id:848,
+            genre:"Western Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/flashlightyouaintright_jessiejzhangliangying.mp3?raw=true",
+            name:"Flashlight & You Ain't Right",
+            artist:"Jessie J & 张靓颖"
+        },
+        {
+            id:849,
+            genre:"Western Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/theawardgoesto_jessiej.mp3?raw=true",
+            name:"The Award Goes To",
+            artist:"Jessie J"
         },
     ]
 }
