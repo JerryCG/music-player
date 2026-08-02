@@ -23,3 +23,4 @@ Please add the functionality that on the lock screen on the mobile phone or carp
 
 Please try to improve the sound quality of the songs when playing.
 
+Please add any other functionality that you think is valuable for the user experience. 
