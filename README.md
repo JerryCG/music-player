@@ -63,6 +63,7 @@ manifest.webmanifest
 sw.js                      # app-shell cache only
 logo-web.png
 logo-web-removebg.png
+archive/                   # historical files only (not loaded by the site)
 ```
 
 Adding a song: append one object to `js/data/musics.js` with `id`, `name`, `artist`, `genre`, and `file` (filename under `music/` in the collection repo). Genres and artists update automatically.

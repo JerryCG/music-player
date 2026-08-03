@@ -1,0 +1,26 @@
+$env:HTTP_PROXY="http://127.0.0.1:7897"
+$env:HTTPS_PROXY="http://127.0.0.1:7897"
+$env:ALL_PROXY="socks5://127.0.0.1:7897"
+cd D:\cheng\Projects\music-player
+grok -c
+grok
+
+Plan for improvement: 
+
+This is my music player website that I wrote previously to collect and play my favorite music. The raw music files are stored separately in another GitHub repo. 
+
+Now I want to fix some issues, add more functionality, and beautify my webiste. 
+
+You should maintain the general style of my original webpage like using black and golden colors (for the dark mode, you can also add a light mode. The default mode follows the user's system.) The logo and website name should be kept as well. You can improve the footnote to be more accurate. 
+
+You should keep all the functions already in the webpage like searching for music using text. You are always welcome to improve these functionality by writing more efficient code (for example, the current js files and workflows of the webpage might not be the most efficient), developing better searching/programming logic, structuring the files better, or in any other dimensions. 
+
+You should detect what are the current limitations and issues when running this app/webpage by testing. For example, one issue I found is when loading a song, we are very likely to encounter an error called "(failed)net::ERR_BLOCKED_BY_ORB" which fails the play. You should develop the best and most stable way to resolve this issue. Please test it to ensure the error is indeed gone after fixing. Other limitations may include when I swtich to another webpage view / other mobile apps / shut down the pc/mobile screen, the auto play stops. There could be many other issues. Please find them all very carefully through extensively testing, and give the best fixes. 
+
+Please try to add the functionality that if a song has lyrics, display the lyrics. This is could be a bit hard but please do your best. 
+
+Please add the functionality that on the lock screen on the mobile phone or carplay or other device, there should be a very good-looking small media window that users can use to control the play of the songs, including stop/continue, next, previous, lyrics (if has and possible), etc. 
+
+Please try to improve the sound quality of the songs when playing.
+
+Please add any other functionality that you think is valuable for the user experience. 
