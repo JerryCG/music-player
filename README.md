@@ -9,10 +9,10 @@ Personal music collection player for [JerryCG](https://github.com/JerryCG). Audi
 - Filter by genre / artist (derived automatically from the catalog)
 - Random and loop play modes
 - Text search (multi-token, keyboard navigation)
-- Dark (black & gold) / light themes — default follows system
+- Dark (black & gold) / light themes (first visit follows system, then toggles)
 - Lyrics when available (LRCLIB + optional local LRC files)
 - Media Session API — lock screen / notification / headset / car media keys
-- Progress bar, volume, decorative visualizer, vinyl-style now-playing hero
+- Progress bar, volume, beat visualizer, dynamic disc art
 - PWA installable shell (service worker caches app assets only, not MP3s)
 - Deep links: `?id=12`
 - Keyboard shortcuts: Space, ←/→, N/P, `/`, L, T
@@ -45,21 +45,24 @@ To add perfect synced lyrics for a rare song, put an LRC next to the audio namin
 ## Project layout
 
 ```
-index.html
-css/styles.css
+index.html                 # page shell
+css/styles.css             # themes + layout
 js/
-  data/musics.js      # single catalog source of truth
-  utils.js            # URL resolve, helpers
-  player.js           # playback engine
-  library.js          # filters / table
+  data/musics.js           # single catalog (849 tracks)
+  app.js                   # bootstrap
+  player.js                # playback + preload
+  library.js               # cascading genre/artist filters
   search.js
   lyrics.js
+  disc-art.js              # procedural + cover art on the disc
   media-session.js
-  audio-enhance.js    # EQ + visualizer
+  audio-enhance.js         # visualizer
   theme.js
-  app.js
+  utils.js
 manifest.webmanifest
-sw.js
+sw.js                      # app-shell cache only
+logo-web.png
+logo-web-removebg.png
 ```
 
 Adding a song: append one object to `js/data/musics.js` with `id`, `name`, `artist`, `genre`, and `file` (filename under `music/` in the collection repo). Genres and artists update automatically.
