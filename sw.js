@@ -1,5 +1,5 @@
 /* App-shell service worker — does not cache large MP3s */
-const CACHE = 'mp-shell-v34';
+const CACHE = 'mp-shell-v39';
 const SHELL = [
   './',
   './index.html',
@@ -15,6 +15,7 @@ const SHELL = [
   './js/disc-art.js',
   './js/app.js',
   './js/data/musics.js',
+  './js/data/lyrics-map.js',
   './logo-web-removebg.png',
   './logo-web.png',
   './manifest.webmanifest',
@@ -39,12 +40,15 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
-  // Never cache audio or external lyrics APIs via SW
+  // Never cache audio, lyrics APIs, or cover lookups via SW
   if (
     url.hostname.includes('jsdelivr') ||
     url.hostname.includes('githubusercontent') ||
     url.hostname.includes('lrclib') ||
-    url.pathname.endsWith('.mp3')
+    url.hostname.includes('lyrics.ovh') ||
+    url.hostname.includes('itunes.apple.com') ||
+    url.pathname.endsWith('.mp3') ||
+    url.pathname.endsWith('.lrc')
   ) {
     return;
   }

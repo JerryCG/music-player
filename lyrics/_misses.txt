@@ -1,0 +1,53 @@
+14	Sail Away Justice - Azure Lane Theme Song	Anna Suzuki	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+20	風の夢 风之梦	Nightcore	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+35	平行线	黄霄云	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+75	Nihilumbra OST Track 3 - Living Forest	unknown	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+80	上弦之三BGM	Unknown	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+112	잊었니 你忘了吗	Sohyang	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+131	INTRO: Stellar	North Light	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+132	Vexento	Lovely Dance	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+215	EI Flamenco Del Rumi	Oliver Shanti	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+249	天际	Mickey Huang	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+272	康美心语	HAYA	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+277	The Piano 钢琴	Dancing Line	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+292	戈薇和犬夜叉	和田薫 (わだかおる)	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+392	你在哪里	Sohyang	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+395	姻缘	Sohyang	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+439	空	大黒摩季 (おおぐろ まき)	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+485	彼岸花开	阿兰	netease:no-match | qq:lyric-err:<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1082)> | kugou:no-match | lrclib:no-match
+486	홀로아리랑 独自阿里郎	Sohyang	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+493	그것만이_내_세상_(원곡가수_들국화) 这就是我的世界	Sohyang	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+508	めぐる季節 变化的四季	宫崎骏	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+543	月光奏鸣曲	贝多芬	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+557	エマの悲しみ 艾玛的悲伤	小畑貴裕 (おばた たかひろ)	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+588	泫然泪下	赵惠丽	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+595	Say Something	谭定安	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+597	나항상그대를 我会一直想你	Sohyang	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+598	하늘을달리다 奔向天空	Sohyang	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+613	Cuchulainn	雷恩寇伯	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+629	Reawakening	Clifford White	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+659	歴史を紡ぐ者 (编造历史的人)	mamomo (まももP)	netease:no-match | qq:empty | kugou:no-candidate | lrclib:no-match
+683	Simply Be	Myristica	netease:no-match | qq:empty | kugou:no-candidate | lrclib:no-match
+694	君の筆は世界を奏でる 你用笔演奏这个世界	松本文紀 (まつもと ふみのり)	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+698	騎士王の誇り 骑士王的荣耀	川井宪次 (かわい けんじ)	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+721	Emotional Cinematic	AShamaluevMusic	netease:no-match | qq:empty | kugou:no-candidate | lrclib:no-match
+731	Memory of the Flow	致不灭的你OST	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+732	MementoMori OST	MementoMori	netease:no-match | qq:empty | kugou:no-candidate | lrclib:no-match
+735	Stars at Dawn	致不灭的你OST	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+736	热情光谱 熱情のスペクトラム 七大罪S1OP	万物股长	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
+744	Only My Heart Knows (가슴만 알죠) 사의찬미 Hymn Of Death OST	Sohyang	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+770	Queen + I'm Every Woman	Jessie J	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+787	Oasis (Dream Massage)	Dave Villano	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+788	Oasis (Relax)	Dave Villano	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+789	Beyond the Mist (Dream Massage)	Dave Villano	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+790	Beyond the Mist (Relax)	Dave Villano	netease:empty | qq:no-match | kugou:no-candidate | lrclib:no-match
+799	Quiet Guitar (Dream Massage)	Dave Villano	netease:empty | qq:no-match | kugou:no-candidate | lrclib:no-match
+800	Quiet Guitar (Relax)	Dave Villano	netease:empty | qq:no-match | kugou:no-candidate | lrclib:no-match
+801	Majestic Piano (Dream Massage)	Dave Villano	netease:empty | qq:no-match | kugou:no-candidate | lrclib:no-match
+802	Majestic Piano (Relax)	Dave Villano	netease:empty | qq:no-match | kugou:no-candidate | lrclib:no-match
+811	Breathe (Onyria)	Ivan Torrent	netease:no-match | qq:empty | kugou:no-candidate | lrclib:no-match
+817	In Absentia (Onyria)	Ivan Torrent	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+819	The Crimson Flight (Onyria)	Ivan Torrent	netease:no-match | qq:empty | kugou:no-candidate | lrclib:no-match
+827	Melantropie (Onyria)	Ivan Torrent	netease:no-match | qq:empty | kugou:no-candidate | lrclib:no-match
+828	Hypervellion (Onyria)	Ivan Torrent	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
+829	Plenilune (Onyria)	Ivan Torrent	netease:no-match | qq:empty | kugou:no-candidate | lrclib:no-match

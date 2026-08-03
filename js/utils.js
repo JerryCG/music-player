@@ -28,35 +28,12 @@ function getAudioUrlCandidates(track) {
   ];
 }
 
-/** Best-effort HTTP cache warm-up without blocking playback */
-const _prefetchLinks = new Map();
-function prefetchAudioUrl(url) {
-  if (!url || typeof document === 'undefined') return;
-  if (_prefetchLinks.has(url)) return;
-  try {
-    const link = document.createElement('link');
-    link.rel = 'preload';
-    link.as = 'fetch';
-    link.href = url;
-    link.crossOrigin = 'anonymous';
-    document.head.appendChild(link);
-    _prefetchLinks.set(url, link);
-    // Cap memory: drop oldest when many accumulate
-    if (_prefetchLinks.size > 6) {
-      const first = _prefetchLinks.keys().next().value;
-      const old = _prefetchLinks.get(first);
-      if (old && old.parentNode) old.parentNode.removeChild(old);
-      _prefetchLinks.delete(first);
-    }
-  } catch (_) {}
-}
-
 /**
- * Fetch full file and wrap as audio/mpeg blob URL.
- * Heavier, but forces a correct MIME type when the browser blocks octet-stream media (ORB).
+ * Last-resort: fetch full file as audio/mpeg blob URL.
+ * Prefer streaming; this holds the whole file in memory — revoke ASAP after use.
  */
 async function fetchAsMpegObjectUrl(url, signal) {
-  const res = await fetch(url, { mode: 'cors', credentials: 'omit', signal });
+  const res = await fetch(url, { mode: 'cors', credentials: 'omit', signal, cache: 'no-store' });
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const buf = await res.arrayBuffer();
   const blob = new Blob([buf], { type: 'audio/mpeg' });
@@ -197,7 +174,6 @@ window.MPUtils = {
   CDN_BASE,
   RAW_BASE,
   getAudioUrlCandidates,
-  prefetchAudioUrl,
   fetchAsMpegObjectUrl,
   extractFileFromLegacySrc,
   debounce,

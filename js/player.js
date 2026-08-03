@@ -415,17 +415,14 @@
     try {
       preloader.setAttribute('data-track-id', String(track.id));
       preloader.crossOrigin = 'anonymous';
-      preloader.preload = 'auto';
+      // metadata only — avoid buffering a full second MP3 into memory
+      preloader.preload = 'metadata';
       preloader.src = url;
       preloader.load();
-      // Nudge browser to fetch: silent play/pause is blocked without gesture —
-      // load() + preload=auto is enough for most engines.
     } catch (e) {
       console.warn('Preload failed', e);
     }
-
-    // Also hint the network stack (best-effort)
-    if (MPUtils.prefetchAudioUrl) MPUtils.prefetchAudioUrl(url);
+    // Intentionally no <link rel=preload> of full audio files (memory / bandwidth).
   }
 
   function isPreloaded(track) {
@@ -525,9 +522,11 @@
     setStatus('loading');
     const url = forcedUrl && urlAttempt === 0 ? forcedUrl : urls[urlAttempt];
     audio.crossOrigin = 'anonymous';
-    // Only call load() when src actually changes — avoids wiping buffer
+    // Prefer network stream (range requests); avoid long-lived full-file copies
     const prev = audio.getAttribute('src') || '';
     if (prev !== url) {
+      // Drop previous blob: URL if any (frees memory)
+      revokeObjectUrl();
       audio.src = url;
       audio.load();
     }

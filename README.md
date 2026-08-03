@@ -10,7 +10,7 @@ Personal music collection player for [JerryCG](https://github.com/JerryCG). Audi
 - Random and loop play modes
 - Text search (multi-token, keyboard navigation)
 - Dark (black & gold) / light themes (first visit follows system, then toggles)
-- Lyrics when available (LRCLIB + optional local LRC files)
+- Lyrics from pre-downloaded local LRC files (batch: NetEase / QQ / Kugou / LRCLIB)
 - Media Session API — lock screen / notification / headset / car media keys
 - Progress bar, volume, beat visualizer, dynamic disc art
 - PWA installable shell (service worker caches app assets only, not MP3s)
@@ -23,24 +23,32 @@ Tracks are streamed from `raw.githubusercontent.com` (CORS + range requests), **
 
 If a stream still fails, the player falls back to fetching the file and playing it as an `audio/mpeg` blob URL.
 
-## Lyrics & covers (realistic limits)
+## Lyrics & covers
 
-This is a **static** GitHub Pages app (no private API keys, no server).
+This is a **static** GitHub Pages app. Lyrics are **downloaded offline** into this repo so playback does not hammer third-party APIs.
 
 | Source | Role |
 |--------|------|
-| Local `lyrics/<file>.lrc` in [music-collection-db](https://github.com/JerryCG/music-collection-db) | Best for rare Chinese tracks you care about |
-| [LRCLIB](https://lrclib.net/) | Free synced/plain lyrics; multi-query; **cover artist + duration** preferred |
-| lyrics.ovh | Plain lyrics fallback only |
+| **`lyrics/<same-as-mp3>.lrc`** in this repo | Primary — one file per catalog track |
+| Batch script `scripts/download_lyrics.py` | NetEase → QQ Music → Kugou → [LRCLIB](https://lrclib.net/) |
+| LRCLIB (browser, thin) | Only if a local file is missing (new tracks) |
 | iTunes Search | Optional disc cover art |
 
-**Not used in-browser:** QQ Music / NetEase / Kugou / Bilibili / YouTube scraping (CORS + ToS + brittle). Audio fingerprinting would need a backend (e.g. Cloudflare Worker + ACRCloud/AudD).
+**Every catalog track is attempted** (including Light Music). Instrumentals may still end up with no file or weak matches — check `lyrics/_misses.txt` after a run.
 
-**Instrumentals:** Light Music / BGM-style titles skip lyrics so wrong synced text is not shown.
+### Refresh / fill lyrics (local machine)
 
-To add perfect synced lyrics for a rare song, put an LRC next to the audio naming scheme:
+You do **not** need the download script at play time. The player reads an **embedded map** (`js/data/lyrics-map.js`) built from the LRC files.
 
-`music-collection-db/lyrics/<same-basename-as-mp3>.lrc`
+```bash
+# Requires Python 3.10+
+python scripts/download_lyrics.py          # fills lyrics/*.lrc (also rebuilds the map)
+python scripts/build_lyrics_map.py         # pack lyrics/*.lrc → js/data/lyrics-map.js
+```
+
+Outputs: `lyrics/*.lrc`, `js/data/lyrics-map.js`, `lyrics/_report.json`, `lyrics/_misses.txt`.
+
+Hard-refresh the page (or wait for SW cache bump) after updating the map.
 
 ## Project layout
 
