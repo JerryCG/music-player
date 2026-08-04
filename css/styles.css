@@ -1061,20 +1061,49 @@ button:focus-visible,
 }
 
 .selection-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   margin: 0.85rem 0 0.45rem;
+  flex-wrap: wrap;
 }
 
 #selection-count {
   margin: 0;
-  color: var(--text-muted);
-  font-size: 0.88rem;
-  font-weight: 500;
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Match Lyrics ghost-btn presence (full padding / height, slightly stronger edge) */
+.library-list-toggle {
+  flex-shrink: 0;
+  border-color: var(--border-strong);
+  color: var(--gold);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.45rem 0.95rem;
+  min-height: 40px;
+}
+
+.library-list-toggle:hover,
+.library-list-toggle[aria-expanded="true"] {
+  border-color: var(--gold-bright);
+  color: var(--gold-bright);
+  background: var(--bg-soft);
 }
 
 /* Track table — full width, scroll inside wrap (not display:block on table) */
 #selected {
   width: 100%;
   min-width: 0;
+}
+
+#selected.is-collapsed,
+#selected[hidden] {
+  display: none;
 }
 
 .track-table-wrap {

@@ -175,7 +175,7 @@
       <div class="panel-head">
         <div>
           <h2 class="section-title" id="select-heading">Library</h2>
-          <p class="section-sub">Filter your collection, then start a session</p>
+          <p class="section-sub">Filter by genre and/or artist</p>
         </div>
         <button type="button" id="click-to-play-button" class="btn-primary">Play selection</button>
       </div>
@@ -195,8 +195,17 @@
 
       <div class="selection-meta">
         <p id="selection-count"></p>
+        <button
+          type="button"
+          id="library-list-toggle"
+          class="ghost-btn library-list-toggle"
+          aria-expanded="false"
+          aria-controls="selected"
+        >
+          Show list
+        </button>
       </div>
-      <div id="selected"></div>
+      <div id="selected" class="is-collapsed" hidden></div>
     </section>
 
     <!-- SEARCH -->
@@ -209,7 +218,7 @@
           type="search"
           id="search-input"
           autocomplete="off"
-          placeholder="Song or artist — press / to focus"
+          placeholder="Song or artist — select to play"
           aria-autocomplete="list"
           aria-controls="search-results"
         >
