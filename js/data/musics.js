@@ -850,7 +850,12 @@ function getMusics() {
     {id:846,name:"玫瑰的名字",artist:"张雨生",genre:"Chinese Pop",file:"meiguidemingzi_zhangyusheng.mp3"},
     {id:847,name:"狼",artist:"韦礼安",genre:"Chinese Pop",file:"lang_weilian.mp3"},
     {id:848,name:"Flashlight & You Ain't Right",artist:"Jessie J & 张靓颖",genre:"Western Pop",file:"flashlightyouaintright_jessiejzhangliangying.mp3"},
-    {id:849,name:"The Award Goes To",artist:"Jessie J",genre:"Western Pop",file:"theawardgoesto_jessiej.mp3"}
+    {id:849,name:"The Award Goes To",artist:"Jessie J",genre:"Western Pop",file:"theawardgoesto_jessiej.mp3"},
+    {id:850,name:"那是我",artist:"周菲戈",genre:"Chinese Pop",file:"nashiwo_zhoufeige.mp3"},
+    {id:851,name:"表态",artist:"梁博",genre:"Chinese Pop",file:"biaotai_liangbo.mp3"},
+    {id:852,name:"三月",artist:"张杰",genre:"Chinese Pop",file:"sanyue_zhangjie.mp3"},
+    {id:853,name:"交出邦尼",artist:"吉克隽逸",genre:"Chinese Pop",file:"jiaochubangni_jikejuanyi.mp3"},
+    {id:854,name:"送流水",artist:"声音碎片乐队",genre:"Chinese Pop",file:"songliushui_shengyinsuipian.mp3"}
   ];
 }
 

@@ -61,7 +61,7 @@ Hard-refresh the page (or wait for SW cache bump) after updating the map.
 index.html                 # page shell
 css/styles.css             # themes + layout
 js/
-  data/musics.js           # single catalog (849 tracks)
+  data/musics.js           # single catalog (854 tracks)
   app.js                   # bootstrap
   player.js                # playback + preload
   library.js               # cascading genre/artist filters

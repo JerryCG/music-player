@@ -1,10 +1,10 @@
 {
-  "total": 849,
-  "ok": 797,
+  "total": 854,
+  "ok": 802,
   "skip_existing": 6,
   "miss": 52,
   "by_source": {
-    "netease": 48,
+    "netease": 53,
     "lrclib": 27,
     "kugou": 253,
     "qq": 463
@@ -7592,7 +7592,52 @@
       "status": "ok",
       "source": "qq",
       "meta": "netease:no-match | qq:693206296:score=116"
+    },
+    {
+      "id": 850,
+      "name": "那是我",
+      "artist": "周菲戈",
+      "file": "nashiwo_zhoufeige.lrc",
+      "status": "ok",
+      "source": "netease",
+      "meta": "netease:2103961391:score=116"
+    },
+    {
+      "id": 851,
+      "name": "表态",
+      "artist": "梁博",
+      "file": "biaotai_liangbo.lrc",
+      "status": "ok",
+      "source": "netease",
+      "meta": "netease:1849068730:score=116"
+    },
+    {
+      "id": 852,
+      "name": "三月",
+      "artist": "张杰",
+      "file": "sanyue_zhangjie.lrc",
+      "status": "ok",
+      "source": "netease",
+      "meta": "netease:2050324999:score=100"
+    },
+    {
+      "id": 853,
+      "name": "交出邦尼",
+      "artist": "吉克隽逸",
+      "file": "jiaochubangni_jikejuanyi.lrc",
+      "status": "ok",
+      "source": "netease",
+      "meta": "netease:1441749964:score=116"
+    },
+    {
+      "id": 854,
+      "name": "送流水",
+      "artist": "声音碎片乐队",
+      "file": "songliushui_shengyinsuipian.lrc",
+      "status": "ok",
+      "source": "netease",
+      "meta": "netease:1365208495:score=116"
     }
   ],
-  "updated_at": "2026-08-04T10:21:23"
+  "updated_at": "2026-08-04T10:46:32"
 }
