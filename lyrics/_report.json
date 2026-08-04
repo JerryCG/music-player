@@ -1,13 +1,13 @@
 {
   "total": 849,
-  "ok": 796,
+  "ok": 797,
   "skip_existing": 6,
-  "miss": 53,
+  "miss": 52,
   "by_source": {
     "netease": 48,
     "lrclib": 27,
     "kugou": 253,
-    "qq": 462
+    "qq": 463
   },
   "items": [
     {
@@ -6586,16 +6586,17 @@
     {
       "id": 736,
       "name": "热情光谱 熱情のスペクトラム 七大罪S1OP",
-      "artist": "万物股长",
-      "file": "reqingguangpu_wanwuguzhang.lrc",
-      "status": "miss",
-      "meta": "netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match"
+      "artist": "生物股长",
+      "file": "reqingguangpu_shengwuguzhang.lrc",
+      "status": "ok",
+      "source": "qq",
+      "meta": "manual:qq:熱情のスペクトラム"
     },
     {
       "id": 737,
       "name": "SAKURA",
-      "artist": "万物股长",
-      "file": "sakura_wanwuguzhang.lrc",
+      "artist": "生物股长",
+      "file": "sakura_shengwuguzhang.lrc",
       "status": "ok",
       "source": "qq",
       "meta": "netease:no-match | qq:1475250:score=97"
@@ -7593,6 +7594,5 @@
       "meta": "netease:no-match | qq:693206296:score=116"
     }
   ],
-  "updated_at": "2026-08-04T09:44:02",
-  "note": "Full-catalog report. Partial runs merge into this file. Source fields recovered from scripts/download_lyrics.log (utf-16) when available."
+  "updated_at": "2026-08-04T10:21:23"
 }

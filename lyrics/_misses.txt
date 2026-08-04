@@ -34,7 +34,6 @@
 731	Memory of the Flow	致不灭的你OST	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
 732	MementoMori OST	MementoMori	netease:no-match | qq:empty | kugou:no-candidate | lrclib:no-match
 735	Stars at Dawn	致不灭的你OST	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
-736	热情光谱 熱情のスペクトラム 七大罪S1OP	万物股长	netease:no-match | qq:no-match | kugou:no-match | lrclib:no-match
 744	Only My Heart Knows (가슴만 알죠) 사의찬미 Hymn Of Death OST	Sohyang	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
 770	Queen + I'm Every Woman	Jessie J	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
 787	Oasis (Dream Massage)	Dave Villano	netease:no-match | qq:no-match | kugou:no-candidate | lrclib:no-match
