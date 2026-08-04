@@ -22,36 +22,71 @@
       { src: logo, sizes: '512x512', type: 'image/png' },
     ];
 
+    // Wrap handlers so OS lock-screen / headset events keep the continuous
+    // playback chain (important for Android after background track changes).
     const handlers = {
-      play: () => MPPlayer.play(),
-      pause: () => MPPlayer.pause(),
-      previoustrack: () => MPPlayer.previous(),
-      nexttrack: () => MPPlayer.next(false),
+      play: () => {
+        try {
+          MPPlayer.play();
+        } catch (_) {}
+      },
+      pause: () => {
+        try {
+          MPPlayer.pause();
+        } catch (_) {}
+      },
+      previoustrack: () => {
+        try {
+          MPPlayer.previous();
+        } catch (_) {}
+      },
+      // fromEnded-style advance: always autoplay next with intent
+      nexttrack: () => {
+        try {
+          MPPlayer.next(true);
+        } catch (_) {}
+      },
       seekbackward: (details) => {
-        const p = MPPlayer.getProgress();
-        MPPlayer.seek(Math.max(0, p.current - (details.seekOffset || 10)), false);
+        try {
+          const p = MPPlayer.getProgress();
+          MPPlayer.seek(Math.max(0, p.current - (details.seekOffset || 10)), false);
+        } catch (_) {}
       },
       seekforward: (details) => {
-        const p = MPPlayer.getProgress();
-        MPPlayer.seek(p.current + (details.seekOffset || 10), false);
+        try {
+          const p = MPPlayer.getProgress();
+          MPPlayer.seek(p.current + (details.seekOffset || 10), false);
+        } catch (_) {}
       },
       seekto: (details) => {
-        if (details.seekTime != null) MPPlayer.seek(details.seekTime, false);
+        try {
+          if (details.seekTime != null) MPPlayer.seek(details.seekTime, false);
+        } catch (_) {}
       },
       stop: () => {
-        MPPlayer.pause();
-        const a = MPPlayer.getAudio();
-        if (a) a.currentTime = 0;
+        try {
+          MPPlayer.pause();
+          const a = MPPlayer.getAudio();
+          if (a) a.currentTime = 0;
+        } catch (_) {}
       },
     };
 
-    for (const [action, handler] of Object.entries(handlers)) {
-      try {
-        navigator.mediaSession.setActionHandler(action, handler);
-      } catch (e) {
-        // Some actions unsupported on this platform
+    function installHandlers() {
+      for (const [action, handler] of Object.entries(handlers)) {
+        try {
+          navigator.mediaSession.setActionHandler(action, handler);
+        } catch (e) {
+          // Some actions unsupported on this platform
+        }
       }
     }
+    installHandlers();
+
+    // Android may drop handlers after long background; re-install on foreground
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) installHandlers();
+    });
   }
 
   function updateMetadata(track) {

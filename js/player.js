@@ -7,12 +7,17 @@
  *  - Random mode picks the next track early so preload is useful.
  *  - Slow primary source → timed failover to alternate CDN.
  *  - Mid-play stall recovery (wait, then gentle re-seek / alternate URL).
+ *  - Background / lock-screen continuity (Android PWA): keep playbackIntent,
+ *    avoid pause-before-src on auto-advance, multi-shot play() retries, and
+ *    resume on visibility / page lifecycle / media canplay.
  */
 (function () {
   const STORAGE_KEY = 'mp-player-state';
   const LOAD_TIMEOUT_MS = 4500;
   const STALL_TIMEOUT_MS = 7000;
   const PRELOAD_MIN_READY = 2; // HAVE_CURRENT_DATA
+  /** Retries after play() fails in background (ms) — Chrome Android often needs several */
+  const PLAY_RETRY_DELAYS_MS = [0, 40, 120, 300, 700, 1500, 3000, 6000, 12000];
 
   /** @type {HTMLAudioElement|null} */
   let audio = null;
@@ -36,16 +41,21 @@
   let loadTimer = null;
   let stallTimer = null;
   let loadGeneration = 0;
+  /** @type {number[]} */
+  let playRetryTimers = [];
+  let lifecycleBound = false;
 
   /**
    * User/session wants audio to play (next/prev/search/play/auto-advance).
    * When true we retry play() as media becomes ready (gesture may expire
-   * before a slow CDN responds).
+   * before a slow CDN responds) and when the app returns from background.
    */
   let playbackIntent = false;
   /** At least one play() has succeeded in this page session */
   let audioUnlocked = false;
   let pendingPlayRetry = false;
+  /** True while auto-advancing / loading next with intent (suppress false "paused") */
+  let advancing = false;
 
   function emit(event, payload) {
     const fns = listeners[event];
@@ -82,6 +92,11 @@
 
     el.addEventListener('ended', () => {
       if (suppressEnded) return;
+      // Keep continuous session for lock-screen / background auto-advance
+      playbackIntent = true;
+      pendingPlayRetry = true;
+      advancing = true;
+      keepMediaSessionPlaying();
       next(true);
     });
     el.addEventListener('error', onAudioError);
@@ -111,33 +126,38 @@
       audioUnlocked = true;
       playbackIntent = true;
       pendingPlayRetry = false;
+      advancing = false;
+      clearPlayRetries();
       if (window.MPAudioEnhance) {
         if (MPAudioEnhance.ensureGraph) MPAudioEnhance.ensureGraph();
         if (MPAudioEnhance.resume) MPAudioEnhance.resume();
       }
       setStatus('playing');
+      keepMediaSessionPlaying();
       emit('play', currentTrack);
       persist();
       document.body.classList.add('is-playing');
       ensureUpcomingAndPreload();
     });
     el.addEventListener('pause', () => {
-      // Distinguish intentional pause from element pause while swapping sources
-      if (!el.ended && !suppressEnded) {
-        // If we still intend to play (loading next track), keep intent
-        if (!playbackIntent || !pendingPlayRetry) {
-          if (!pendingPlayRetry) {
-            setStatus('paused');
-            emit('pause', currentTrack);
-            persist();
-          }
+      clearStallTimer();
+      // Track handoff / loading next: do NOT treat as user pause (Android fires
+      // pause when src changes; clearing intent here breaks background autoplay).
+      if (suppressEnded || advancing || playbackIntent || pendingPlayRetry) {
+        if (playbackIntent || advancing || pendingPlayRetry) {
+          keepMediaSessionPlaying();
+          if (playbackIntent && el.paused) schedulePlayRetries();
         }
+        return;
       }
       document.body.classList.remove('is-playing');
-      clearStallTimer();
+      setStatus('paused');
+      emit('pause', currentTrack);
+      persist();
+      if (window.MPMediaSession) MPMediaSession.updatePlaybackState(false);
     });
     el.addEventListener('waiting', () => {
-      setStatus('loading');
+      if (playbackIntent) setStatus('loading');
       armStallTimer();
     });
     el.addEventListener('stalled', () => {
@@ -146,13 +166,87 @@
     el.addEventListener('playing', () => {
       clearStallTimer();
       clearLoadTimer();
+      clearPlayRetries();
+      advancing = false;
+      pendingPlayRetry = false;
       if (window.MPAudioEnhance && MPAudioEnhance.resume) MPAudioEnhance.resume();
       setStatus('playing');
+      keepMediaSessionPlaying();
       document.body.classList.add('is-playing');
     });
     el.addEventListener('progress', () => {
       // Buffering progress — clear slow-load timer once we have data
       if (el.readyState >= PRELOAD_MIN_READY) clearLoadTimer();
+    });
+  }
+
+  function keepMediaSessionPlaying() {
+    if (window.MPMediaSession && MPMediaSession.updatePlaybackState) {
+      try {
+        MPMediaSession.updatePlaybackState(true);
+      } catch (_) {}
+    }
+  }
+
+  function clearPlayRetries() {
+    for (var i = 0; i < playRetryTimers.length; i++) {
+      clearTimeout(playRetryTimers[i]);
+    }
+    playRetryTimers = [];
+  }
+
+  /**
+   * Multi-shot play() retries — critical when Chrome Android freezes the page
+   * between tracks or rejects the first play() after a background src change.
+   */
+  function schedulePlayRetries() {
+    clearPlayRetries();
+    if (!playbackIntent) return;
+    for (var i = 0; i < PLAY_RETRY_DELAYS_MS.length; i++) {
+      (function (delay) {
+        var id = setTimeout(function () {
+          if (!playbackIntent || !audio || !currentTrack) return;
+          if (!audio.paused && !audio.ended) {
+            clearPlayRetries();
+            return;
+          }
+          if (window.MPAudioEnhance && MPAudioEnhance.resume) MPAudioEnhance.resume();
+          tryPlay(currentTrack, true);
+        }, delay);
+        playRetryTimers.push(id);
+      })(PLAY_RETRY_DELAYS_MS[i]);
+    }
+  }
+
+  function resumeIfIntended() {
+    if (!playbackIntent || !audio || !currentTrack) return;
+    if (window.MPAudioEnhance && MPAudioEnhance.resume) MPAudioEnhance.resume();
+    if (!audio.paused && !audio.ended) return;
+    pendingPlayRetry = true;
+    keepMediaSessionPlaying();
+    tryPlay(currentTrack, true);
+    schedulePlayRetries();
+  }
+
+  function bindLifecycleResume() {
+    if (lifecycleBound) return;
+    lifecycleBound = true;
+
+    var onFg = function () {
+      // Page Lifecycle / tab focus / returning from another app
+      resumeIfIntended();
+    };
+
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) onFg();
+    });
+    window.addEventListener('pageshow', onFg);
+    window.addEventListener('focus', onFg);
+    // Page Lifecycle API (Chrome)
+    document.addEventListener('resume', onFg);
+    document.addEventListener('freeze', function () {
+      // Persist intent; play will be retried on resume
+      if (playbackIntent) persist();
     });
   }
 
@@ -176,6 +270,7 @@
       document.body.appendChild(preloader);
     }
 
+    bindLifecycleResume();
     return audio;
   }
 
@@ -444,10 +539,15 @@
     suppressEnded = true;
     clearLoadTimer();
     clearStallTimer();
+    clearPlayRetries();
 
     if (autoplay) {
       playbackIntent = true;
       pendingPlayRetry = true;
+      advancing = true;
+      keepMediaSessionPlaying();
+    } else {
+      advancing = false;
     }
 
     // Invalidate upcoming if we're jumping elsewhere
@@ -455,9 +555,15 @@
       upcomingTrack = null;
     }
 
-    try {
-      audio.pause();
-    } catch (_) {}
+    // IMPORTANT (Android Chrome / installed PWA):
+    // Do NOT pause() before src change when auto-advancing. pause()+src+play()
+    // in the background often loses continuous playback and requires a fresh
+    // user gesture. Just assign the next URL and call play().
+    if (!autoplay) {
+      try {
+        audio.pause();
+      } catch (_) {}
+    }
 
     // Fast path: promote warm preloader URL (HTTP cache already filled)
     const urls = MPUtils.getAudioUrlCandidates(track);
@@ -469,7 +575,7 @@
       if (preUrl) startUrl = preUrl;
     }
 
-    setStatus('loading');
+    setStatus(autoplay ? 'loading' : 'paused');
     applyUrl(track, autoplay, gen, startUrl);
 
     markPlayed(track.id);
@@ -480,6 +586,11 @@
     emit('trackchange', track);
     updateNowPlayingUI(track);
     persist();
+
+    if (autoplay) {
+      // Fire retries even if the first play() is deferred while backgrounded
+      schedulePlayRetries();
+    }
   }
 
   /**
@@ -543,32 +654,55 @@
     if (!audio || !track) return;
     if (window.MPAudioEnhance && MPAudioEnhance.resume) MPAudioEnhance.resume();
 
-    const p = audio.play();
+    // Keep OS media session alive during background transitions
+    if (playbackIntent) keepMediaSessionPlaying();
+
+    var p;
+    try {
+      p = audio.play();
+    } catch (syncErr) {
+      pendingPlayRetry = true;
+      if (playbackIntent) {
+        setStatus('loading');
+        schedulePlayRetries();
+      }
+      return;
+    }
+
     if (p && typeof p.then === 'function') {
       p.then(function () {
         audioUnlocked = true;
         playbackIntent = true;
         pendingPlayRetry = false;
+        advancing = false;
+        clearPlayRetries();
         if (window.MPAudioEnhance) {
           if (MPAudioEnhance.ensureGraph) MPAudioEnhance.ensureGraph();
           if (MPAudioEnhance.resume) MPAudioEnhance.resume();
         }
         setStatus('playing');
+        keepMediaSessionPlaying();
         ensureUpcomingAndPreload();
       }).catch(function (err) {
         const name = (err && err.name) || '';
-        // New load aborted this play() — ignore
+        // New load aborted this play() — another loadTrack is in flight
         if (name === 'AbortError') return;
 
-        // Not ready yet / gesture expired / autoplay policy:
-        // stay quiet, retry on canplay or when user hits Play.
+        // Not ready yet / autoplay policy / background freeze:
+        // keep intent and retry (canplay + scheduled retries + visibility).
         pendingPlayRetry = true;
         if (name === 'NotAllowedError' && !audioUnlocked && !playbackIntent) {
           setStatus('paused');
           console.info('Autoplay blocked until a control is used');
           return;
         }
+        // After a successful play earlier in the session, keep trying —
+        // Android often rejects the first play() after a background src change.
         setStatus(audioUnlocked || playbackIntent ? 'loading' : 'paused');
+        if (playbackIntent) {
+          keepMediaSessionPlaying();
+          if (!isRetry) schedulePlayRetries();
+        }
         if (!isRetry) {
           console.warn('play() deferred, will retry when ready:', name || err);
         }
@@ -671,17 +805,22 @@
     if (!audio) return;
     playbackIntent = true;
     pendingPlayRetry = true;
+    advancing = false;
     audio.muted = false;
     if (window.MPAudioEnhance) {
       if (MPAudioEnhance.ensureGraph) MPAudioEnhance.ensureGraph();
       if (MPAudioEnhance.resume) MPAudioEnhance.resume();
     }
+    keepMediaSessionPlaying();
     tryPlay(currentTrack || { name: '' }, false);
+    schedulePlayRetries();
   }
 
   function pause() {
     playbackIntent = false;
     pendingPlayRetry = false;
+    advancing = false;
+    clearPlayRetries();
     if (audio) audio.pause();
   }
 
@@ -714,6 +853,8 @@
     // User clicked next / natural end — keep continuous playback intent
     playbackIntent = true;
     pendingPlayRetry = true;
+    advancing = true;
+    keepMediaSessionPlaying();
 
     // Prefer pre-planned (and ideally preloaded) next track
     let pick = upcomingTrack;
