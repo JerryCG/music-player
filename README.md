@@ -42,11 +42,16 @@ You do **not** need the download script at play time. The player reads an **embe
 
 ```bash
 # Requires Python 3.10+
-python scripts/download_lyrics.py          # fills lyrics/*.lrc (also rebuilds the map)
-python scripts/build_lyrics_map.py         # pack lyrics/*.lrc → js/data/lyrics-map.js
+python scripts/download_lyrics.py              # fill lyrics/*.lrc; merge into full report
+python scripts/download_lyrics.py --ids 12,35  # subset only — still keeps full _report / _misses
+python scripts/download_lyrics.py --report-only  # refresh report from disk without network
+python scripts/build_lyrics_map.py             # pack lyrics/*.lrc → js/data/lyrics-map.js
 ```
 
-Outputs: `lyrics/*.lrc`, `js/data/lyrics-map.js`, `lyrics/_report.json`, `lyrics/_misses.txt`.
+Outputs: `lyrics/*.lrc`, `js/data/lyrics-map.js`, plus tracking files:
+
+- `lyrics/_report.json` — full-catalog history (merged on every run, not replaced by subsets)
+- `lyrics/_misses.txt` — current misses only (updated when you fill or add tracks)
 
 Hard-refresh the page (or wait for SW cache bump) after updating the map.
 

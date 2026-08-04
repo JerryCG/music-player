@@ -660,6 +660,140 @@ def fetch_for_track(track: dict) -> tuple[str | None, str, str]:
     return None, "", " | ".join(notes) if notes else "no-providers"
 
 
+REPORT_PATH = LYRICS_DIR / "_report.json"
+MISSES_PATH = LYRICS_DIR / "_misses.txt"
+
+
+def load_previous_items() -> dict[int, dict]:
+    """Load prior report items keyed by track id (preserves source/meta history)."""
+    if not REPORT_PATH.exists():
+        return {}
+    try:
+        data = json.loads(REPORT_PATH.read_text(encoding="utf-8"))
+    except Exception as e:
+        log(f"  warning: could not read previous report ({e})")
+        return {}
+    out: dict[int, dict] = {}
+    for it in data.get("items") or []:
+        try:
+            tid = int(it.get("id"))
+        except (TypeError, ValueError):
+            continue
+        out[tid] = it
+    return out
+
+
+def has_usable_lrc(path: Path) -> bool:
+    if not path.exists():
+        return False
+    try:
+        return path.stat().st_size > 20
+    except OSError:
+        return False
+
+
+def build_full_report(
+    catalog: list[dict],
+    prev_items: dict[int, dict],
+    run_items: dict[int, dict],
+) -> dict:
+    """
+    Full-catalog report: merge this run's results into previous history,
+    and reconcile against on-disk .lrc files so partial runs never wipe data.
+    """
+    items: list[dict] = []
+    by_source: dict[str, int] = {}
+    ok = 0
+    miss = 0
+    existing = 0
+
+    for track in catalog:
+        tid = int(track["id"])
+        out = lrc_path_for(track)
+        fname = out.name
+        name = track.get("name") or ""
+        artist = track.get("artist") or ""
+
+        # Prefer this run's result, else previous, else derive from disk
+        if tid in run_items:
+            it = dict(run_items[tid])
+        elif tid in prev_items:
+            it = dict(prev_items[tid])
+            # Reconcile status with disk (e.g. manually added/removed LRC)
+            on_disk = has_usable_lrc(out)
+            if on_disk and it.get("status") == "miss":
+                it["status"] = "existing"
+                it["file"] = fname
+                it.pop("meta", None)
+            elif not on_disk and it.get("status") in ("ok", "existing"):
+                it["status"] = "miss"
+                it["file"] = fname
+                it["meta"] = it.get("meta") or "missing-on-disk"
+                it["source"] = None
+        else:
+            if has_usable_lrc(out):
+                it = {
+                    "id": tid,
+                    "name": name,
+                    "artist": artist,
+                    "file": fname,
+                    "status": "existing",
+                    "source": None,
+                }
+            else:
+                it = {
+                    "id": tid,
+                    "name": name,
+                    "artist": artist,
+                    "file": fname,
+                    "status": "miss",
+                    "meta": "never-fetched",
+                }
+
+        # Always keep human-readable identity current from catalog
+        it["id"] = tid
+        it["name"] = name
+        it["artist"] = artist
+        it["file"] = fname
+
+        st = it.get("status")
+        if st in ("ok", "existing"):
+            ok += 1
+            if st == "existing":
+                existing += 1
+            src = it.get("source")
+            if src:
+                by_source[src] = by_source.get(src, 0) + 1
+        else:
+            miss += 1
+            it["status"] = "miss"
+
+        items.append(it)
+
+    return {
+        "total": len(catalog),
+        "ok": ok,
+        "skip_existing": existing,
+        "miss": miss,
+        "by_source": by_source,
+        "items": items,
+        "updated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+    }
+
+
+def write_report_and_misses(report: dict) -> None:
+    REPORT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    miss_lines = []
+    for it in report.get("items") or []:
+        if it.get("status") != "miss":
+            continue
+        miss_lines.append(
+            f"{it.get('id')}\t{it.get('name') or ''}\t{it.get('artist') or ''}\t"
+            f"{it.get('meta') or ''}"
+        )
+    MISSES_PATH.write_text("\n".join(miss_lines) + ("\n" if miss_lines else ""), encoding="utf-8")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Batch download LRC for all catalog tracks")
     ap.add_argument("--force", action="store_true", help="Re-download even if .lrc exists")
@@ -667,100 +801,133 @@ def main() -> int:
     ap.add_argument("--start", type=int, default=0, help="Skip first N tracks")
     ap.add_argument("--ids", type=str, default="", help="Comma-separated track ids only")
     ap.add_argument("--delay", type=float, default=0.35, help="Delay between HTTP calls")
+    ap.add_argument(
+        "--report-only",
+        action="store_true",
+        help="Rebuild full _report.json / _misses.txt from catalog + disk (no download)",
+    )
     args = ap.parse_args()
 
     global DELAY
     DELAY = max(0.1, float(args.delay))
 
     LYRICS_DIR.mkdir(parents=True, exist_ok=True)
-    tracks = parse_musics(MUSICS_JS)
-    log(f"Catalog: {len(tracks)} tracks from {MUSICS_JS}")
+    catalog = parse_musics(MUSICS_JS)
+    log(f"Catalog: {len(catalog)} tracks from {MUSICS_JS}")
 
+    prev_items = load_previous_items()
+    if prev_items:
+        log(f"Loaded previous report history: {len(prev_items)} items")
+
+    # Subset for this download run only (report always covers full catalog)
+    work = list(catalog)
     if args.ids:
         idset = {int(x.strip()) for x in args.ids.split(",") if x.strip()}
-        tracks = [t for t in tracks if int(t["id"]) in idset]
+        work = [t for t in catalog if int(t["id"]) in idset]
     if args.start:
-        tracks = tracks[args.start :]
+        work = work[args.start :]
     if args.limit:
-        tracks = tracks[: args.limit]
+        work = work[: args.limit]
 
-    report = {
-        "total": len(tracks),
-        "ok": 0,
-        "skip_existing": 0,
-        "miss": 0,
-        "by_source": {},
-        "items": [],
-    }
-    misses: list[str] = []
+    run_items: dict[int, dict] = {}
+    run_ok = 0
+    run_miss = 0
+    run_skip = 0
+    run_by_source: dict[str, int] = {}
 
-    for i, track in enumerate(tracks, 1):
-        tid = track.get("id")
-        name = track.get("name")
-        artist = track.get("artist")
-        out = lrc_path_for(track)
-        prefix = f"[{i}/{len(tracks)}] id={tid} {name} — {artist}"
+    if args.report_only:
+        log("Report-only mode: reconciling catalog + on-disk LRC (no network).")
+    else:
+        log(f"This run will process {len(work)} track(s); report will cover full catalog.")
+        for i, track in enumerate(work, 1):
+            tid = int(track["id"])
+            name = track.get("name")
+            artist = track.get("artist")
+            out = lrc_path_for(track)
+            prefix = f"[{i}/{len(work)}] id={tid} {name} — {artist}"
 
-        if out.exists() and out.stat().st_size > 20 and not args.force:
-            report["skip_existing"] += 1
-            report["ok"] += 1
-            log(f"{prefix}  SKIP (exists {out.name})")
-            report["items"].append(
-                {"id": tid, "file": out.name, "status": "existing", "source": None}
-            )
-            continue
-
-        log(f"{prefix}  searching…")
-        text, src, meta = fetch_for_track(track)
-        if text:
-            out.write_text(text, encoding="utf-8")
-            report["ok"] += 1
-            report["by_source"][src] = report["by_source"].get(src, 0) + 1
-            log(f"    OK [{src}] → {out.name}  ({meta})")
-            report["items"].append(
-                {
+            if has_usable_lrc(out) and not args.force:
+                run_skip += 1
+                run_ok += 1
+                log(f"{prefix}  SKIP (exists {out.name})")
+                # Preserve prior source if we had one
+                prev = prev_items.get(tid) or {}
+                run_items[tid] = {
                     "id": tid,
+                    "name": name,
+                    "artist": artist,
+                    "file": out.name,
+                    "status": "existing" if not prev.get("source") else "ok",
+                    "source": prev.get("source"),
+                    "meta": prev.get("meta"),
+                }
+                if prev.get("source"):
+                    run_items[tid]["status"] = "ok"
+                    run_by_source[prev["source"]] = run_by_source.get(prev["source"], 0) + 1
+                continue
+
+            log(f"{prefix}  searching…")
+            text, src, meta = fetch_for_track(track)
+            if text:
+                out.write_text(text, encoding="utf-8")
+                run_ok += 1
+                run_by_source[src] = run_by_source.get(src, 0) + 1
+                log(f"    OK [{src}] → {out.name}  ({meta})")
+                run_items[tid] = {
+                    "id": tid,
+                    "name": name,
+                    "artist": artist,
                     "file": out.name,
                     "status": "ok",
                     "source": src,
                     "meta": meta,
                 }
-            )
-        else:
-            report["miss"] += 1
-            log(f"    MISS  ({meta})")
-            misses.append(f"{tid}\t{name}\t{artist}\t{meta}")
-            report["items"].append(
-                {"id": tid, "file": out.name, "status": "miss", "meta": meta}
-            )
+            else:
+                run_miss += 1
+                log(f"    MISS  ({meta})")
+                run_items[tid] = {
+                    "id": tid,
+                    "name": name,
+                    "artist": artist,
+                    "file": out.name,
+                    "status": "miss",
+                    "meta": meta,
+                }
 
-    report_path = LYRICS_DIR / "_report.json"
-    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-    misses_path = LYRICS_DIR / "_misses.txt"
-    misses_path.write_text("\n".join(misses) + ("\n" if misses else ""), encoding="utf-8")
+    # Always write full-catalog merged report (never replace with partial subset)
+    report = build_full_report(catalog, prev_items, run_items)
+    write_report_and_misses(report)
 
     log("")
-    log("======== SUMMARY ========")
-    log(f"  processed : {report['total']}")
-    log(f"  ok        : {report['ok']}  (existing skipped: {report['skip_existing']})")
+    log("======== THIS RUN ========")
+    if not args.report_only:
+        log(f"  processed : {len(work)}")
+        log(f"  ok        : {run_ok}  (skipped existing: {run_skip})")
+        log(f"  miss      : {run_miss}")
+        log(f"  by source : {run_by_source}")
+    log("======== FULL CATALOG REPORT ========")
+    log(f"  total     : {report['total']}")
+    log(f"  ok        : {report['ok']}  (existing on disk: {report['skip_existing']})")
     log(f"  miss      : {report['miss']}")
     log(f"  by source : {report['by_source']}")
-    log(f"  report    : {report_path}")
-    log(f"  misses    : {misses_path}")
+    log(f"  report    : {REPORT_PATH}")
+    log(f"  misses    : {MISSES_PATH}")
 
     # Rebuild embedded map so the player can load lyrics without fetch
-    try:
-        import subprocess
+    if not args.report_only:
+        try:
+            import subprocess
 
-        build = ROOT / "scripts" / "build_lyrics_map.py"
-        if build.exists():
-            log("Rebuilding js/data/lyrics-map.js …")
-            subprocess.check_call([sys.executable, str(build)], cwd=str(ROOT))
-    except Exception as e:
-        log(f"  (map rebuild skipped: {e})")
+            build = ROOT / "scripts" / "build_lyrics_map.py"
+            if build.exists():
+                log("Rebuilding js/data/lyrics-map.js …")
+                subprocess.check_call([sys.executable, str(build)], cwd=str(ROOT))
+        except Exception as e:
+            log(f"  (map rebuild skipped: {e})")
 
     return 0 if report["miss"] < report["total"] else 1
 
 
 if __name__ == "__main__":
     sys.exit(main())
+

@@ -717,7 +717,7 @@ function getMusics() {
     {id:713,name:"Counter Attack-Mankind (Sasha Version)",artist:"Samuel Kim",genre:"Light Music",file:"counterattackmankind_samuelkim.mp3"},
     {id:714,name:"糸 (线)",artist:"Uru",genre:"Japanese Pop",file:"xian_uru.mp3"},
     {id:715,name:"Spirit of the Wild",artist:"BrunuhVille",genre:"Epic",file:"spiritofthewild_brunuhville.mp3"},
-    {id:716,name:"高雅～メインテーマ (高雅～主题曲)",artist:"S_E_N_S_ (神思者)",genre:"Light Music",file:"spiritofthewild_brunuhville.mp3"},
+    {id:716,name:"高雅～メインテーマ (高雅～主题曲)",artist:"S_E_N_S_ (神思者)",genre:"Light Music",file:"gaoya_shensizhe.mp3"},
     {id:717,name:"Endless War",artist:"Within Temptation",genre:"Electronic",file:"endlesswar_withintemptation.mp3"},
     {id:718,name:"Evolver",artist:"Fired Earth Music & Jesper Kyd",genre:"Epic",file:"evolver_firedearthmusic.mp3"},
     {id:719,name:"黄昏海的尽头",artist:"私に闻いて风i",genre:"Electronic",file:"huanghunhaidejintou.mp3"},
