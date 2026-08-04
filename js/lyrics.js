@@ -327,9 +327,9 @@
     currentId = track.id;
 
     withPageScrollLocked(function () {
-      if (statusEl) statusEl.textContent = 'Looking up lyrics…';
+      if (statusEl) statusEl.textContent = 'Looking up…';
       if (linesEl) {
-        linesEl.innerHTML = '<p class="lyrics-empty muted">Looking up lyrics…</p>';
+        linesEl.innerHTML = '<p class="lyrics-empty muted">Looking up…</p>';
         linesEl.scrollTop = 0;
       }
     });
@@ -375,7 +375,7 @@
 
     withPageScrollLocked(function () {
       if (syncedLines.length) {
-        if (statusEl) statusEl.textContent = 'Synced lyrics';
+        if (statusEl) statusEl.textContent = 'Synced';
         linesEl.classList.add('is-synced');
         linesEl.innerHTML = syncedLines
           .map(function (l, i) {
@@ -402,9 +402,9 @@
 
       if (plainText) {
         linesEl.classList.remove('is-synced');
-        if (statusEl) statusEl.textContent = 'Unsynced lyrics';
+        if (statusEl) statusEl.textContent = 'Static';
         linesEl.innerHTML =
-          '<p class="lyrics-note muted">Timing not available — static lyrics</p>' +
+          '<p class="lyrics-note muted">Timing not available — static text</p>' +
           '<pre class="lyric-plain">' +
           MPUtils.escapeHtml(plainText) +
           '</pre>';
@@ -501,7 +501,7 @@
   function showEmptyUnlocked(msg) {
     syncedLines = [];
     plainText = '';
-    if (statusEl) statusEl.textContent = msg || 'No lyrics';
+    if (statusEl) statusEl.textContent = msg || 'None';
     if (linesEl) {
       linesEl.classList.remove('is-synced');
       linesEl.innerHTML =
