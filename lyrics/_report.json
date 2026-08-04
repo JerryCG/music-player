@@ -41,8 +41,9 @@
       "name": "Bridge Over Troubled Water",
       "artist": "Sohyang",
       "file": "bridgeovertroubledwater_sohyang.lrc",
-      "status": "existing",
-      "source": null
+      "status": "ok",
+      "source": "manual",
+      "meta": "Sohyang Immortal Songs 2 arrangement from Genius/published lyrics; ends with lay me down outro (not studio ease your mind); times adapted, may need shift"
     },
     {
       "id": 5,
