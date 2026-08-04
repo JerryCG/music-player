@@ -24,7 +24,7 @@
   let seekLockIndex = -1;
 
   /** Don't auto-center until this time (ms since performance.now origin) */
-  const USER_SCROLL_IDLE_MS = 5000;
+  const USER_SCROLL_IDLE_MS = 3000;
   let userScrollResumeAt = 0;
   let ignoreScrollEvents = false;
   let scrollAnimId = null;
