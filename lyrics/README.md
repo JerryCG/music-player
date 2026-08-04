@@ -33,4 +33,18 @@ python scripts/build_lyrics_map.py
 python scripts/download_lyrics.py --report-only
 ```
 
+### Shift timing (alignment)
+
+If lyrics lead/lag the audio by a constant amount:
+
+```bash
+# Move every timed line so a known lyric lands at 0:09
+python scripts/shift_lrc.py lyrics/reqingguangpu_shengwuguzhang.lrc \
+  --anchor-text "鳴りやまぬ愛をさけぶよ" --anchor-time 9.0 --rebuild-map
+
+# Or apply a fixed delta in seconds (+ later, − earlier)
+python scripts/shift_lrc.py lyrics/foo.lrc --delta 1.5 --rebuild-map
+python scripts/shift_lrc.py lyrics/foo.lrc --delta -0.8 --rebuild-map
+```
+
 The player uses the embedded map (`js/data/lyrics-map.js`), not live NetEase/QQ calls.

@@ -126,6 +126,15 @@
   function parseLrc(lrc) {
     const result = [];
     const lines = String(lrc).split(/\r?\n/);
+    // Optional global shift in ms: [offset:500] / [offset:-200] (LRC convention)
+    var offsetSec = 0;
+    for (var oi = 0; oi < lines.length; oi++) {
+      var om = lines[oi].match(/^\[offset\s*:\s*([+-]?\d+(?:\.\d+)?)\s*\]/i);
+      if (om) {
+        offsetSec = parseFloat(om[1]) / 1000;
+        break;
+      }
+    }
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       const timeRe = /\[(\d{1,2}):(\d{2})(?:\.(\d{1,3}))?\]/g;
@@ -135,12 +144,16 @@
         const min = parseInt(m[1], 10);
         const sec = parseInt(m[2], 10);
         const ms = m[3] ? parseInt(m[3].padEnd(3, '0').slice(0, 3), 10) : 0;
-        times.push(min * 60 + sec + ms / 1000);
+        times.push(min * 60 + sec + ms / 1000 + offsetSec);
       }
       const text = line.replace(/\[\d{1,2}:\d{2}(?:\.\d{1,3})?\]/g, '').trim();
       if (!text || !times.length) continue;
       if (/^(ti|ar|al|by|offset):/i.test(text)) continue;
-      for (let t = 0; t < times.length; t++) result.push({ time: times[t], text: text });
+      for (let t = 0; t < times.length; t++) {
+        var tt = times[t];
+        if (tt < 0) tt = 0;
+        result.push({ time: tt, text: text });
+      }
     }
     result.sort(function (a, b) {
       return a.time - b.time;
