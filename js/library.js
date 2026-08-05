@@ -207,7 +207,8 @@
         // Rebuild artist list for this genre; keep artist if still valid
         refreshSelects({ genre: genreSel.value, artist: getArtist() });
         renderTable();
-        if (window.MPPlayer && MPPlayer.updateModeUI) MPPlayer.updateModeUI();
+        // Do NOT update the player mode pill here — filters are pending until
+        // "Play selection" (or a table/search play) applies a new queue.
       });
     }
     if (artistSel) {
@@ -215,7 +216,6 @@
         lastChanged = 'artist';
         refreshSelects({ genre: getGenre(), artist: artistSel.value });
         renderTable();
-        if (window.MPPlayer && MPPlayer.updateModeUI) MPPlayer.updateModeUI();
       });
     }
     if (listToggle) {
@@ -332,7 +332,6 @@
       artist: artist || 'All',
     });
     renderTable();
-    if (window.MPPlayer && MPPlayer.updateModeUI) MPPlayer.updateModeUI();
   }
 
   window.MPLibrary = {

@@ -27,6 +27,11 @@
   let queue = [];
   let queueIndex = -1;
   let mode = 'Random';
+  /**
+   * Scope of the *active* play session (applied via Play selection / search / restore).
+   * Not the pending Library dropdowns — those may differ until the user applies them.
+   */
+  let sessionScope = { genre: 'All', artist: 'All' };
   let playCounts = new Map();
   let urlAttempt = 0;
   let currentTrack = null;
@@ -374,9 +379,27 @@
     armLoadTimer(track, gen, true);
   }
 
+  function captureSessionScopeFromUI() {
+    sessionScope = {
+      genre: (document.getElementById('dropGenre') || {}).value || 'All',
+      artist: (document.getElementById('dropArtist') || {}).value || 'All',
+    };
+  }
+
+  function formatSessionScopeLabel(genre, artist) {
+    genre = genre || 'All';
+    artist = artist || 'All';
+    if (genre === 'All' && artist === 'All') return 'All Songs';
+    if (genre === 'All') return artist + "'s Songs";
+    if (artist === 'All') return genre + ' Songs';
+    return artist + "'s " + genre + ' Songs';
+  }
+
   function setQueue(tracks, startId, preferredMode) {
     queue = (tracks || []).slice();
     if (preferredMode) mode = preferredMode;
+    // New queue = new active session; scope follows filters *at apply time*
+    captureSessionScopeFromUI();
     resetPlayCounts();
     upcomingTrack = null;
     clearPreloader();
@@ -408,6 +431,11 @@
     MPUtils.toast(mode + ' mode');
   }
 
+  /**
+   * Mode control + session pill.
+   * Pill always reflects the *playing* session (last applied queue scope + mode),
+   * never the pending Library filter dropdowns.
+   */
   function updateModeUI() {
     const btn = document.getElementById('mode-button');
     if (btn) {
@@ -417,13 +445,7 @@
     }
     const label = document.getElementById('current-play-mode');
     if (label) {
-      const genre = (document.getElementById('dropGenre') || {}).value || 'All';
-      const artist = (document.getElementById('dropArtist') || {}).value || 'All';
-      let scope;
-      if (genre === 'All' && artist === 'All') scope = 'All Songs';
-      else if (genre === 'All') scope = artist + "'s Songs";
-      else if (artist === 'All') scope = genre + ' Songs';
-      else scope = artist + "'s " + genre + ' Songs';
+      const scope = formatSessionScopeLabel(sessionScope.genre, sessionScope.artist);
       label.textContent = scope + ' · ' + mode;
     }
   }
@@ -991,8 +1013,9 @@
       id: currentTrack.id,
       mode,
       position: audio ? audio.currentTime : 0,
-      genre: (document.getElementById('dropGenre') || {}).value,
-      artist: (document.getElementById('dropArtist') || {}).value,
+      // Persist *session* scope (what is playing), not pending dropdown filters
+      genre: sessionScope.genre || 'All',
+      artist: sessionScope.artist || 'All',
     });
   }
 
@@ -1003,6 +1026,12 @@
 
     if (!state || !state.id) return null;
     if (state.mode) mode = state.mode === 'Loop' ? 'Loop' : 'Random';
+    if (state.genre || state.artist) {
+      sessionScope = {
+        genre: state.genre || 'All',
+        artist: state.artist || 'All',
+      };
+    }
     updateModeUI();
     return state;
   }
