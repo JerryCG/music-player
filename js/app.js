@@ -16,6 +16,7 @@
 
     // Theme first (no FOUC if inline script also ran)
     MPTheme.init();
+    if (window.MPSleepTimer) MPSleepTimer.init();
 
     // Audio element
     const mount = document.getElementById('musicPlayerPosition');

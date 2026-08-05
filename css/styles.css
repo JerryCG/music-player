@@ -280,6 +280,14 @@ body {
   color: transparent;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-shrink: 0;
+  position: relative;
+}
+
 .icon-btn {
   width: 48px;
   min-width: 48px;
@@ -292,12 +300,240 @@ body {
   font-size: 1.15rem;
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
 }
 
 .icon-btn:hover {
   transform: translateY(-2px);
   border-color: var(--border-strong);
   box-shadow: var(--shadow-gold);
+}
+
+/* —— Sleep timer —— */
+.sleep-timer-wrap {
+  position: relative;
+}
+
+.sleep-timer-btn.is-active {
+  border-color: var(--gold-bright);
+  box-shadow: var(--shadow-gold), inset 0 0 0 1px rgba(212, 175, 55, 0.25);
+  color: var(--gold-hot);
+}
+
+.sleep-timer-icon {
+  display: block;
+  line-height: 1;
+}
+
+.sleep-timer-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 1.35rem;
+  height: 1.2rem;
+  padding: 0 0.28rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+  color: #1a1408;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.sleep-timer-badge[hidden] {
+  display: none !important;
+}
+
+.sleep-timer-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 60;
+  width: min(340px, calc(100vw - 1.5rem));
+  padding: 1rem 1.05rem 1.05rem;
+  border-radius: 18px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-solid);
+  box-shadow: var(--shadow), 0 0 0 1px rgba(212, 175, 55, 0.08);
+}
+
+[data-theme="light"] .sleep-timer-panel {
+  background: #fffdf7;
+  box-shadow: 0 16px 40px rgba(90, 60, 10, 0.14);
+}
+
+.sleep-timer-panel[hidden] {
+  display: none !important;
+}
+
+.sleep-timer-panel-head {
+  margin-bottom: 0.75rem;
+}
+
+.sleep-timer-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sleep-timer-status {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.sleep-timer-modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+}
+
+.sleep-mode-btn {
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 0.4rem 0.35rem;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.sleep-mode-btn:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.sleep-mode-btn.is-active {
+  border-color: var(--gold);
+  color: var(--gold-hot);
+  background: rgba(212, 175, 55, 0.14);
+}
+
+.sleep-timer-hint {
+  margin: 0 0 0.65rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.sleep-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.7rem;
+}
+
+.sleep-chip {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.38rem 0.7rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.sleep-chip:hover {
+  border-color: var(--border-strong);
+}
+
+.sleep-chip.is-selected {
+  border-color: var(--gold);
+  background: rgba(212, 175, 55, 0.16);
+  color: var(--gold-hot);
+}
+
+.sleep-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.35rem;
+}
+
+.sleep-custom-row label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.sleep-custom-row input[type="number"] {
+  width: 5rem;
+  min-height: 38px;
+  border-radius: 12px;
+  border: 1px solid var(--border-strong);
+  background: #1c1810;
+  color: #f6f0e4;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.55rem;
+}
+
+[data-theme="dark"] .sleep-custom-row input[type="number"] {
+  background: linear-gradient(180deg, #242016 0%, #16130e 100%);
+  border-color: rgba(232, 197, 71, 0.4);
+  color: #f8f1e0;
+}
+
+[data-theme="light"] .sleep-custom-row input[type="number"] {
+  background: #fffef9;
+  color: #1a1408;
+  border-color: rgba(140, 105, 20, 0.4);
+}
+
+.sleep-custom-unit {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.sleep-timer-actions {
+  display: flex;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.sleep-timer-start {
+  flex: 1;
+  min-width: 8rem;
+}
+
+.sleep-timer-cancel {
+  flex-shrink: 0;
+}
+
+@media (max-width: 520px) {
+  .sleep-timer-panel {
+    position: fixed;
+    top: auto;
+    right: 0.75rem;
+    left: 0.75rem;
+    width: auto;
+    bottom: 1rem;
+  }
+
+  .sleep-timer-modes {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Hero player */

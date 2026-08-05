@@ -74,6 +74,79 @@
         </div>
       </div>
       <div class="header-actions">
+        <div class="sleep-timer-wrap" id="sleep-timer-wrap">
+          <button
+            type="button"
+            id="sleep-timer-toggle"
+            class="icon-btn sleep-timer-btn"
+            aria-label="Sleep timer"
+            aria-expanded="false"
+            aria-controls="sleep-timer-panel"
+            title="Sleep timer"
+          >
+            <span class="sleep-timer-icon" aria-hidden="true">⏱</span>
+            <span class="sleep-timer-badge" id="sleep-timer-badge" hidden></span>
+          </button>
+          <div
+            id="sleep-timer-panel"
+            class="sleep-timer-panel"
+            role="dialog"
+            aria-label="Sleep timer"
+            hidden
+          >
+            <div class="sleep-timer-panel-head">
+              <h2 class="sleep-timer-title">Sleep timer</h2>
+              <p class="sleep-timer-status" id="sleep-timer-status">Off — session only</p>
+            </div>
+
+            <div class="sleep-timer-modes" role="tablist" aria-label="Timer mode">
+              <button type="button" class="sleep-mode-btn is-active" data-mode="time" role="tab" aria-selected="true">Time</button>
+              <button type="button" class="sleep-mode-btn" data-mode="songs" role="tab" aria-selected="false">Songs</button>
+              <button type="button" class="sleep-mode-btn" data-mode="queue" role="tab" aria-selected="false">End of queue</button>
+            </div>
+
+            <div class="sleep-timer-body" data-panel="time">
+              <p class="sleep-timer-hint">Stop after a duration (wall clock keeps running while paused)</p>
+              <div class="sleep-chip-row" id="sleep-time-presets">
+                <button type="button" class="sleep-chip" data-minutes="15">15m</button>
+                <button type="button" class="sleep-chip" data-minutes="30">30m</button>
+                <button type="button" class="sleep-chip is-selected" data-minutes="45">45m</button>
+                <button type="button" class="sleep-chip" data-minutes="60">60m</button>
+                <button type="button" class="sleep-chip" data-minutes="90">90m</button>
+              </div>
+              <div class="sleep-custom-row">
+                <label for="sleep-custom-minutes">Custom</label>
+                <input type="number" id="sleep-custom-minutes" min="1" max="180" step="1" placeholder="min" inputmode="numeric" />
+                <span class="sleep-custom-unit">minutes</span>
+              </div>
+            </div>
+
+            <div class="sleep-timer-body" data-panel="songs" hidden>
+              <p class="sleep-timer-hint">Stop after this many songs finish (skips count too). Aligned with time presets at ~3 min/song.</p>
+              <div class="sleep-chip-row" id="sleep-song-presets">
+                <button type="button" class="sleep-chip" data-songs="5">5</button>
+                <button type="button" class="sleep-chip" data-songs="10">10</button>
+                <button type="button" class="sleep-chip is-selected" data-songs="15">15</button>
+                <button type="button" class="sleep-chip" data-songs="20">20</button>
+                <button type="button" class="sleep-chip" data-songs="30">30</button>
+              </div>
+              <div class="sleep-custom-row">
+                <label for="sleep-custom-songs">Custom</label>
+                <input type="number" id="sleep-custom-songs" min="1" max="100" step="1" placeholder="n" inputmode="numeric" />
+                <span class="sleep-custom-unit">songs</span>
+              </div>
+            </div>
+
+            <div class="sleep-timer-body" data-panel="queue" hidden>
+              <p class="sleep-timer-hint">Play through the current queue once, then stop (works in Random or Loop)</p>
+            </div>
+
+            <div class="sleep-timer-actions">
+              <button type="button" id="sleep-timer-start" class="btn-primary sleep-timer-start">Start timer</button>
+              <button type="button" id="sleep-timer-cancel" class="ghost-btn sleep-timer-cancel" hidden>Cancel</button>
+            </div>
+          </div>
+        </div>
         <button type="button" id="theme-toggle" class="icon-btn" aria-label="Switch theme" title="Dark mode — click for light">☾</button>
       </div>
     </header>
@@ -282,6 +355,7 @@
       <kbd>/</kbd> search
       <kbd>L</kbd> lyrics
       <kbd>T</kbd> theme
+      <kbd>S</kbd> sleep timer
     </p>
 
     <footer id="footer">
@@ -298,6 +372,7 @@
   <script src="js/data/lyrics-map.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/theme.js"></script>
+  <script src="js/sleep-timer.js"></script>
   <script src="js/library.js"></script>
   <script src="js/search.js"></script>
   <script src="js/player.js"></script>

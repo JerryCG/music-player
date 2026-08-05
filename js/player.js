@@ -97,6 +97,14 @@
 
     el.addEventListener('ended', () => {
       if (suppressEnded) return;
+      // Sleep timer may consume this completion and stop instead of advancing
+      if (
+        window.MPSleepTimer &&
+        typeof MPSleepTimer.shouldBlockNext === 'function' &&
+        MPSleepTimer.shouldBlockNext(true)
+      ) {
+        return;
+      }
       // Keep continuous session for lock-screen / background auto-advance
       playbackIntent = true;
       pendingPlayRetry = true;
@@ -421,6 +429,10 @@
       queueIndex = queue.length ? 0 : -1;
     }
     updateModeUI();
+    // Sleep timer is bound to the previous session queue — cancel on replace
+    if (window.MPSleepTimer && typeof MPSleepTimer.onQueueChange === 'function') {
+      MPSleepTimer.onQueueChange();
+    }
     if (queueIndex >= 0) loadTrack(queue[queueIndex], true);
   }
 
@@ -805,19 +817,25 @@
   function playById(id, newQueue) {
     playbackIntent = true;
     pendingPlayRetry = true;
+    var queueReplaced = false;
     if (newQueue && newQueue.length) {
       queue = newQueue.slice();
       resetPlayCounts();
+      queueReplaced = true;
     }
     if (!queue.length && window.MUSICS) {
       queue = window.MUSICS.slice();
       resetPlayCounts();
+      queueReplaced = true;
     }
     upcomingTrack = null;
     clearPreloader();
     const idx = queue.findIndex((t) => t.id === id);
     if (idx >= 0) {
       queueIndex = idx;
+      if (queueReplaced && window.MPSleepTimer && MPSleepTimer.onQueueChange) {
+        MPSleepTimer.onQueueChange();
+      }
       loadTrack(queue[idx], true);
     } else {
       const track =
@@ -827,6 +845,9 @@
         queue = [track];
         queueIndex = 0;
         resetPlayCounts();
+        if (window.MPSleepTimer && MPSleepTimer.onQueueChange) {
+          MPSleepTimer.onQueueChange();
+        }
         loadTrack(track, true);
       }
     }
@@ -880,6 +901,17 @@
 
   function next(fromEnded) {
     if (!queue.length) return;
+
+    // Manual next: sleep timer may stop instead of advancing
+    // (ended path already consulted shouldBlockNext before calling next(true))
+    if (
+      !fromEnded &&
+      window.MPSleepTimer &&
+      typeof MPSleepTimer.shouldBlockNext === 'function' &&
+      MPSleepTimer.shouldBlockNext(false)
+    ) {
+      return;
+    }
 
     // User clicked next / natural end — keep continuous playback intent
     playbackIntent = true;
