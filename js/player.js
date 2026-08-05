@@ -380,10 +380,19 @@
   }
 
   function captureSessionScopeFromUI() {
-    sessionScope = {
-      genre: (document.getElementById('dropGenre') || {}).value || 'All',
-      artist: (document.getElementById('dropArtist') || {}).value || 'All',
-    };
+    var genre = 'All';
+    var artist = 'All';
+    if (window.MPLibrary && typeof MPLibrary.getGenre === 'function') {
+      genre = MPLibrary.getGenre() || 'All';
+    } else {
+      genre = (document.getElementById('dropGenre') || {}).value || 'All';
+    }
+    if (window.MPLibrary && typeof MPLibrary.getArtist === 'function') {
+      artist = MPLibrary.getArtist() || 'All';
+    } else {
+      artist = (document.getElementById('dropArtist') || {}).value || 'All';
+    }
+    sessionScope = { genre: genre, artist: artist };
   }
 
   function formatSessionScopeLabel(genre, artist) {
