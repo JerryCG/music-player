@@ -29,7 +29,7 @@ function getMusics() {
     {id:25,name:"路过人间",artist:"郁可唯",genre:"Chinese Pop",file:"luguorenjian_yukewei.mp3"},
     {id:26,name:"You Raise Me Up",artist:"Sohyang",genre:"Korean Pop",file:"youraisemeup_sohyang.mp3"},
     {id:27,name:"The Calling",artist:"The Fat Rat",genre:"Electronic",file:"thecalling_thefatrat.mp3"},
-    {id:28,name:"天之弱",artist:"Akie",genre:"Japanese Pop",file:"tianzhiruo_akie.mp3"},
+    {id:28,name:"天ノ弱 (天之弱)",artist:"Akie秋绘",genre:"Japanese Pop",file:"tianzhiruo_akie.mp3"},
     {id:29,name:"The Dawn",artist:"Dreamtale",genre:"Epic",file:"thedawn_dreamtale.mp3"},
     {id:30,name:"Komorebi",artist:"m-taku",genre:"Light Music",file:"komorebi_mtaku.mp3"},
     {id:31,name:"나 그대에게 모두 드리리 我会把一切都交给你",artist:"Jang Sa Ik & Sohyang",genre:"Korean Pop",file:"wohuibayiqiedoujiaogeini_jangsaiksohyang.mp3"},
