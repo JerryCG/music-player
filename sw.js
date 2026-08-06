@@ -1,5 +1,5 @@
 /* App-shell service worker — does not cache large MP3s */
-const CACHE = 'mp-shell-v58';
+const CACHE = 'mp-shell-v61';
 const SHELL = [
   './',
   './index.html',

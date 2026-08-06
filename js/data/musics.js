@@ -753,7 +753,7 @@ function getMusics() {
     {id:749,name:"让我留在你身边",artist:"陈奕迅 Eason",genre:"Chinese Pop",file:"rangwoliuzainishenbian_eason.mp3"},
     {id:750,name:"最初的爱",artist:"张靓颖",genre:"Chinese Pop",file:"zuichudeai_zhangliangying.mp3"},
     {id:751,name:"千年之恋",artist:"芝麻",genre:"Japanese Pop",file:"qiannianzhilian_zhima.mp3"},
-    {id:752,name:"下一站天后",artist:"Twins",genre:"Japanese Pop",file:"xiayizhantianhou_twins.mp3"},
+    {id:752,name:"下一站天后",artist:"Twins",genre:"Chinese Pop",file:"xiayizhantianhou_twins.mp3"},
     {id:753,name:"What Are Words",artist:"Chris Medina",genre:"Western Pop",file:"whatarewords_chrismedina.mp3"},
     {id:754,name:"如果我们不曾相遇",artist:"五月天",genre:"Chinese Pop",file:"ruguowomenbucengxiangyu_wuyuetian.mp3"},
     {id:755,name:"最后一次亲吻你 君に最後の口づけを",artist:"Majoko まじ娘",genre:"Japanese Pop",file:"zuihouyiciqinwenni_majiko.mp3"},
