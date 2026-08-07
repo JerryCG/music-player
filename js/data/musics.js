@@ -854,7 +854,15 @@ function getMusics() {
     {id:851,name:"表态",artist:"梁博",genre:"Chinese Pop",file:"biaotai_liangbo.mp3"},
     {id:852,name:"三月",artist:"张杰",genre:"Chinese Pop",file:"sanyue_zhangjie.mp3"},
     {id:853,name:"交出邦尼",artist:"吉克隽逸",genre:"Chinese Pop",file:"jiaochubangni_jikejuanyi.mp3"},
-    {id:854,name:"送流水",artist:"声音碎片乐队",genre:"Chinese Pop",file:"songliushui_shengyinsuipian.mp3"}
+    {id:854,name:"送流水",artist:"声音碎片乐队",genre:"Chinese Pop",file:"songliushui_shengyinsuipian.mp3"},
+    {id:855,name:"我的未来式",artist:"郭采洁",genre:"Chinese Pop",file:"wodeweilaishi_guocaijie.mp3"},
+    {id:856,name:"天地龙鳞",artist:"王力宏",genre:"Chinese Ancientry",file:"tiandilonglin_wanglihong.mp3"},
+    {id:857,name:"太难唱了",artist:"彭佳慧",genre:"Chinese Pop",file:"tainanchangle_pengjiahui.mp3"},
+    {id:858,name:"唯一",artist:"邓紫棋",genre:"Chinese Pop",file:"weiyi_dengziqi.mp3"},
+    {id:859,name:"绿袖子",artist:"Richard Clayderman",genre:"Light Music",file:"lvxiuzi_richardclayderman.mp3"},
+    {id:860,name:"秘密的庭院",artist:"Richard Clayderman",genre:"Light Music",file:"mimidetingyuan_richardclayderman.mp3"},
+    {id:861,name:"星星小夜曲",artist:"Richard Clayderman",genre:"Light Music",file:"xingxingxiaoyequ_richardclayderman.mp3"},
+    {id:862,name:"托卡塔曲",artist:"Richard Clayderman",genre:"Epic",file:"tuokataqu_richardclayderman.mp3"}
   ];
 }
 
