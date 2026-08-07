@@ -421,11 +421,26 @@
     return out;
   }
 
+  /**
+   * Whether a list row should show selected/ticked.
+   * - Exact rule: only that credit string.
+   * - Involves rule (xx+): the "All involving" row for xx, plus every exact
+   *   credit that matches xx (solo + collabs) — same set as the filter.
+   */
   function isRuleSelected(value, mode) {
     if (value === 'All') return !artistRules.length;
-    var key = ruleKey(value, mode || 'exact');
+    mode = mode || 'exact';
+    var key = ruleKey(value, mode);
+
     for (var i = 0; i < artistRules.length; i++) {
-      if (ruleKey(artistRules[i].value, artistRules[i].mode) === key) return true;
+      var r = artistRules[i];
+      // Direct match (same value + mode)
+      if (ruleKey(r.value, r.mode) === key) return true;
+
+      // Involves chip → highlight all list credits covered by that involves key
+      if (r.mode === 'involves' && mode === 'exact' && value && value !== 'All') {
+        if (MPUtils.matchesQuery(value, r.value)) return true;
+      }
     }
     return false;
   }
