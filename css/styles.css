@@ -773,6 +773,24 @@ body.is-playing .disc {
   text-transform: none;
   letter-spacing: 0.02em;
   font-weight: 500;
+  /* Multi-artist labels: show every name, wrap cleanly when long */
+  max-width: min(100%, 28rem);
+  white-space: normal;
+  text-align: left;
+  line-height: 1.35;
+  height: auto;
+  min-height: 1.6rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.pill-soft.is-long-scope {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  max-width: min(100%, 36rem);
 }
 
 #player-status {
@@ -1479,6 +1497,88 @@ button:focus-visible,
   content: ' +';
 }
 
+/* —— Multi-artist chips (below the combobox so the input bar stays put) —— */
+.artist-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.artist-filter .combobox {
+  /* Keep the type-ahead bar as the stable first row */
+  order: 0;
+  flex-shrink: 0;
+}
+
+.artist-chips {
+  order: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  /* Growing chip rows only expand downward; do not reflow the input above */
+  min-height: 0;
+}
+
+.artist-chips[hidden] {
+  display: none !important;
+}
+
+.artist-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  max-width: 100%;
+  padding: 0.28rem 0.35rem 0.28rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--gold-hot);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.artist-chip.is-involves {
+  border-color: rgba(212, 175, 55, 0.55);
+  background: rgba(212, 175, 55, 0.16);
+}
+
+.artist-chip.is-exact {
+  color: var(--text);
+  background: var(--bg-soft);
+}
+
+.artist-chip-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 14rem;
+}
+
+.artist-chip-remove {
+  flex-shrink: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.artist-chip-remove:hover {
+  color: var(--gold-bright);
+  background: rgba(212, 175, 55, 0.15);
+}
+
 .combobox-empty {
   padding: 0.65rem 0.75rem;
   color: var(--text-muted);
@@ -1510,10 +1610,20 @@ button:focus-visible,
 
 #selection-count {
   margin: 0;
+  min-width: 0;
+  flex: 1 1 12rem;
   color: var(--text);
   font-size: 0.92rem;
   font-weight: 600;
   letter-spacing: 0.01em;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+#selection-count.is-multi-filter {
+  font-size: 0.86rem;
+  font-weight: 500;
 }
 
 /* Match Lyrics ghost-btn presence (full padding / height, slightly stronger edge) */

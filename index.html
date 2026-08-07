@@ -248,7 +248,7 @@
       <div class="panel-head">
         <div>
           <h2 class="section-title" id="select-heading">Library</h2>
-          <p class="section-sub">Filter by genre and/or artist — type a name and Enter for all collabs</p>
+          <p class="section-sub">Filter by genre and/or artist(s)</p>
         </div>
         <button type="button" id="click-to-play-button" class="btn-primary">Play selection</button>
       </div>
@@ -284,30 +284,39 @@
           </div>
           <div class="field" id="artistSelection">
             <label for="artist-input">Artist</label>
-            <div class="combobox" id="artist-combobox">
-              <input
-                type="text"
-                id="artist-input"
-                class="combobox-input"
-                role="combobox"
-                aria-autocomplete="list"
-                aria-expanded="false"
-                aria-controls="artist-listbox"
-                aria-haspopup="listbox"
-                autocomplete="off"
-                spellcheck="false"
-                placeholder="Search artists…"
-              />
-              <button
-                type="button"
-                class="combobox-toggle"
-                id="artist-toggle"
-                tabindex="-1"
-                aria-label="Show artist list"
-              >▾</button>
-              <input type="hidden" id="dropArtist" name="dropArtist" value="All" />
-              <input type="hidden" id="dropArtistMode" name="dropArtistMode" value="exact" />
-              <ul id="artist-listbox" class="combobox-list" role="listbox" hidden></ul>
+            <div class="artist-filter" id="artist-filter">
+              <div class="combobox" id="artist-combobox">
+                <input
+                  type="text"
+                  id="artist-input"
+                  class="combobox-input"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-expanded="false"
+                  aria-controls="artist-listbox"
+                  aria-haspopup="listbox"
+                  autocomplete="off"
+                  spellcheck="false"
+                  placeholder="Add artist…"
+                />
+                <button
+                  type="button"
+                  class="combobox-toggle"
+                  id="artist-toggle"
+                  tabindex="-1"
+                  aria-label="Show artist list"
+                >▾</button>
+                <input type="hidden" id="dropArtist" name="dropArtist" value="All" />
+                <input type="hidden" id="dropArtistMode" name="dropArtistMode" value="exact" />
+                <ul id="artist-listbox" class="combobox-list" role="listbox" hidden></ul>
+              </div>
+              <div
+                id="artist-chips"
+                class="artist-chips"
+                role="list"
+                aria-label="Selected artists"
+                hidden
+              ></div>
             </div>
           </div>
         </div>

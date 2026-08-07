@@ -31,7 +31,7 @@
    * Scope of the *active* play session (applied via Play selection / search / restore).
    * Not the pending Library dropdowns — those may differ until the user applies them.
    */
-  let sessionScope = { genre: 'All', artist: 'All', artistMode: 'exact' };
+  let sessionScope = { genre: 'All', artist: 'All', artistMode: 'exact', artistRules: [] };
   let playCounts = new Map();
   let urlAttempt = 0;
   let currentTrack = null;
@@ -391,10 +391,14 @@
     var genre = 'All';
     var artist = 'All';
     var artistMode = 'exact';
+    var artistRules = [];
     if (window.MPLibrary && typeof MPLibrary.getGenre === 'function') {
       genre = MPLibrary.getGenre() || 'All';
     } else {
       genre = (document.getElementById('dropGenre') || {}).value || 'All';
+    }
+    if (window.MPLibrary && typeof MPLibrary.getArtistRules === 'function') {
+      artistRules = MPLibrary.getArtistRules() || [];
     }
     if (window.MPLibrary && typeof MPLibrary.getArtist === 'function') {
       artist = MPLibrary.getArtist() || 'All';
@@ -403,23 +407,56 @@
     }
     if (window.MPLibrary && typeof MPLibrary.getArtistMatchMode === 'function') {
       artistMode = MPLibrary.getArtistMatchMode() || 'exact';
-    } else {
-      artistMode = (document.getElementById('dropArtistMode') || {}).value || 'exact';
     }
-    if (artist === 'All') artistMode = 'exact';
-    sessionScope = { genre: genre, artist: artist, artistMode: artistMode };
+    if (!artistRules.length) {
+      artist = 'All';
+      artistMode = 'exact';
+    } else if (artistRules.length === 1) {
+      artist = artistRules[0].value;
+      artistMode = artistRules[0].mode === 'involves' ? 'involves' : 'exact';
+    } else {
+      artistMode = 'multi';
+      if (window.MPLibrary && typeof MPLibrary.formatArtistRulesLabel === 'function') {
+        artist = MPLibrary.formatArtistRulesLabel(artistRules);
+      }
+    }
+    sessionScope = {
+      genre: genre,
+      artist: artist,
+      artistMode: artistMode,
+      artistRules: artistRules,
+    };
   }
 
-  function formatSessionScopeLabel(genre, artist, artistMode) {
+  function formatSessionScopeLabel(genre, artist, artistMode, artistRules) {
     genre = genre || 'All';
     artist = artist || 'All';
     artistMode = artistMode || 'exact';
-    if (genre === 'All' && artist === 'All') return 'All Songs';
-    // Involves: singer + collabs — mark with + so the pill matches the filter field
-    var artistLabel =
-      artist !== 'All' && artistMode === 'involves' ? artist + '+' : artist;
-    if (genre === 'All') return artistLabel + "'s Songs";
-    if (artist === 'All') return genre + ' Songs';
+    artistRules = artistRules || [];
+
+    var artistLabel = '';
+    if (artistRules.length) {
+      if (window.MPLibrary && typeof MPLibrary.formatArtistRulesLabel === 'function') {
+        artistLabel = MPLibrary.formatArtistRulesLabel(artistRules);
+      } else {
+        artistLabel = artistRules
+          .map(function (r) {
+            return r.mode === 'involves' ? r.value + '+' : r.value;
+          })
+          .join(' · ');
+      }
+    } else if (artist !== 'All') {
+      artistLabel = artistMode === 'involves' ? artist + '+' : artist;
+    }
+
+    if (genre === 'All' && !artistLabel) return 'All Songs';
+    if (genre === 'All') {
+      // Multi: "A+ · B · C" already lists everyone; single: "A's Songs"
+      if (artistRules.length > 1) return artistLabel;
+      return artistLabel + "'s Songs";
+    }
+    if (!artistLabel) return genre + ' Songs';
+    if (artistRules.length > 1) return artistLabel + ' · ' + genre;
     return artistLabel + "'s " + genre + ' Songs';
   }
 
@@ -477,12 +514,16 @@
     }
     const label = document.getElementById('current-play-mode');
     if (label) {
+      const rules = sessionScope.artistRules || [];
       const scope = formatSessionScopeLabel(
         sessionScope.genre,
         sessionScope.artist,
-        sessionScope.artistMode
+        sessionScope.artistMode,
+        rules
       );
       label.textContent = scope + ' · ' + mode;
+      label.title = scope + ' · ' + mode;
+      label.classList.toggle('is-long-scope', rules.length > 2 || String(scope).length > 42);
     }
   }
 
@@ -1072,7 +1113,8 @@
       // Persist *session* scope (what is playing), not pending dropdown filters
       genre: sessionScope.genre || 'All',
       artist: sessionScope.artist || 'All',
-      artistMode: sessionScope.artistMode === 'involves' ? 'involves' : 'exact',
+      artistMode: sessionScope.artistMode || 'exact',
+      artistRules: sessionScope.artistRules || [],
     });
   }
 
@@ -1083,11 +1125,12 @@
 
     if (!state || !state.id) return null;
     if (state.mode) mode = state.mode === 'Loop' ? 'Loop' : 'Random';
-    if (state.genre || state.artist) {
+    if (state.genre || state.artist || (state.artistRules && state.artistRules.length)) {
       sessionScope = {
         genre: state.genre || 'All',
         artist: state.artist || 'All',
-        artistMode: state.artistMode === 'involves' ? 'involves' : 'exact',
+        artistMode: state.artistMode || 'exact',
+        artistRules: Array.isArray(state.artistRules) ? state.artistRules : [],
       };
     }
     updateModeUI();
