@@ -728,7 +728,7 @@ function getMusics() {
     {id:725,name:"Floating (漂浮的)",artist:"Roberto Cacciapaglia",genre:"Light Music",file:"floating_roberto.mp3"},
     {id:726,name:"星河入梦",artist:"dylanf",genre:"Light Music",file:"xingherumeng_dylanf.mp3"},
     {id:727,name:"花が散る世界（花儿凋零的世界）",artist:"Revo",genre:"Light Music",file:"huaerdiaolingdeshijie_revo.mp3"},
-    {id:728,name:"Senbonzakura",artist:"Lindsey Stirling",genre:"Epic",file:"senbonzakura_lindsaystirling.mp3"},
+    {id:728,name:"Senbonzakura",artist:"Lindsey Stirling",genre:"Epic",file:"senbonzakura_lindseystirling.mp3"},
     {id:729,name:"Sweet Dreams, My Dear",artist:"Sohyang",genre:"Korean Pop",file:"sweetdreamsmydear_sohyang.mp3"},
     {id:730,name:"星光下的梦想",artist:"旺仔小乔",genre:"Chinese Pop",file:"xingguangxiademengxiang_wangzaixiaoqiao.mp3"},
     {id:731,name:"Memory of the Flow",artist:"致不灭的你OST",genre:"Epic",file:"memoryoftheflow_zhibumiedeniost.mp3"},

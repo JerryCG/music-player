@@ -5092,7 +5092,7 @@ function getMusics() {
         {
             id:728,
             genre:"Epic",
-            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/senbonzakura_lindsaystirling.mp3?raw=true",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/senbonzakura_lindseystirling.mp3?raw=true",
             name:"Senbonzakura",
             artist:"Lindsay Stirling"
         },
