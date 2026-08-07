@@ -29,6 +29,8 @@
    * re-open the list (mobile Chrome: Enter blurs then focus() fires open again).
    */
   let suppressArtistListOpen = false;
+  /** Ignore blur→commit while we stabilize focus after Enter/pick */
+  let suppressArtistBlurCommit = false;
 
   /**
    * Selected artist rules (OR). Empty = All artists.
@@ -592,12 +594,12 @@
     }
   }
 
-  function pickHighlighted(listId, onPick) {
+  function pickHighlighted(listId, onPick, pickOpts) {
     if (highlightIndex < 0) return false;
     var list = document.getElementById(listId);
     var opt = list && list.querySelectorAll('.combobox-option')[highlightIndex];
     if (!opt) return false;
-    onPick(opt.dataset.value, opt.dataset.mode || 'exact');
+    onPick(opt.dataset.value, opt.dataset.mode || 'exact', pickOpts);
     return true;
   }
 
@@ -939,31 +941,93 @@
     renderArtistList(q);
   }
 
-  /** Focus artist input for the next add without re-opening the dropdown */
+  /**
+   * Hold window scroll while mobile focus thrash settles (Enter → next field = Search).
+   */
+  function holdWindowScroll(ms) {
+    ms = ms == null ? 280 : ms;
+    var x = window.scrollX || window.pageXOffset || 0;
+    var y = window.scrollY || window.pageYOffset || 0;
+    var done = false;
+    function pin() {
+      if (done) return;
+      window.scrollTo(x, y);
+    }
+    pin();
+    var id = window.setInterval(pin, 16);
+    window.setTimeout(function () {
+      done = true;
+      window.clearInterval(id);
+      pin();
+    }, ms);
+  }
+
+  /**
+   * Focus artist input for the next add without reopening the list or scrolling
+   * the page (esp. mobile Enter advancing focus to #search-input).
+   */
   function focusArtistInputQuietly() {
     var input = document.getElementById('artist-input');
     if (!input) return;
     suppressArtistListOpen = true;
-    try {
-      input.focus({ preventScroll: true });
-    } catch (_) {
+    suppressArtistBlurCommit = true;
+    holdWindowScroll(360);
+
+    function refocus() {
+      if (document.activeElement === input) return;
       try {
-        input.focus();
-      } catch (_) {}
+        input.focus({ preventScroll: true });
+      } catch (_) {
+        try {
+          input.focus();
+        } catch (_) {}
+      }
     }
-    // Clear flag after focus/blur churn (mobile keyboard / Enter)
-    setTimeout(function () {
+
+    // If mobile jumps focus to Search (next text field after collapsed library), pull it back.
+    function onFocusIn(e) {
+      if (!suppressArtistBlurCommit) return;
+      var t = e.target;
+      if (!t || t === input) return;
+      if (t.id === 'search-input' || (t.tagName === 'INPUT' && t !== input)) {
+        e.stopPropagation();
+        refocus();
+        holdWindowScroll(100);
+      }
+    }
+    document.addEventListener('focusin', onFocusIn, true);
+
+    refocus();
+    requestAnimationFrame(function () {
+      refocus();
+      requestAnimationFrame(refocus);
+    });
+    window.setTimeout(refocus, 0);
+    window.setTimeout(refocus, 50);
+    window.setTimeout(refocus, 120);
+    window.setTimeout(refocus, 220);
+    window.setTimeout(function () {
+      document.removeEventListener('focusin', onFocusIn, true);
       suppressArtistListOpen = false;
-    }, 300);
+      suppressArtistBlurCommit = false;
+      // Final pin in case a late scroll happened
+      holdWindowScroll(50);
+      refocus();
+    }, 360);
   }
 
   /**
    * Add artist rule (or clear if All). Does not replace existing chips.
    * @param {string} value
    * @param {string} [mode] 'exact' | 'involves'
+   * @param {{ fromEnter?: boolean }} [opts]
    */
-  function pickArtist(value, mode) {
+  function pickArtist(value, mode, opts) {
+    opts = opts || {};
     lastChanged = 'artist';
+    // Snapshot scroll before chips/table reflow (collapsed list → big layout jump)
+    if (opts.fromEnter) holdWindowScroll(360);
+
     if (!value || value === 'All') {
       clearArtistRules();
       closeAllDropdowns();
@@ -979,6 +1043,7 @@
     refreshSelects({ genre: getGenre(), clearArtistInput: true });
     renderTable();
     // Ready for next singer — keep keyboard if open, but do not reopen the list
+    // or let mobile Enter scroll to Search.
     focusArtistInputQuietly();
   }
 
@@ -993,8 +1058,10 @@
   /**
    * Free-text commit: Enter/blur → involves when possible (add chip).
    * Involves key is canonicalized to the closest artist-list match.
+   * @param {{ fromEnter?: boolean }} [opts]
    */
-  function tryCommitTyped() {
+  function tryCommitTyped(opts) {
+    opts = opts || {};
     var input = document.getElementById('artist-input');
     if (!input) return false;
     var raw = stripArtistDisplaySuffix(input.value);
@@ -1004,14 +1071,14 @@
       return true;
     }
     if (raw.toLowerCase() === 'all') {
-      pickArtist('All', 'exact');
+      pickArtist('All', 'exact', opts);
       return true;
     }
 
     var involveKey = involvesKeyForQuery(raw);
     var involveCount = countTracksInvolving(involveKey, getGenre());
     if (involveCount > 0) {
-      pickArtist(involveKey, 'involves');
+      pickArtist(involveKey, 'involves', opts);
       return true;
     }
 
@@ -1037,7 +1104,7 @@
       if (near && artistOptions.indexOf(near) !== -1) exact = near;
     }
     if (exact) {
-      pickArtist(exact, 'exact');
+      pickArtist(exact, 'exact', opts);
       return true;
     }
 
@@ -1071,6 +1138,21 @@
       openArtistList({ query: input.value, resetHighlight: true, fullList: false, force: true });
     });
 
+    function onArtistEnter(e) {
+      // Mobile Chrome: Enter/"Go" advances to the next text field (Search),
+      // skipping buttons — only obvious when the track table is collapsed.
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+      holdWindowScroll(320);
+      suppressArtistListOpen = true;
+      suppressArtistBlurCommit = true;
+      if (openWhich === 'artist' && highlightIndex >= 0) {
+        if (pickHighlighted('artist-listbox', pickArtist, { fromEnter: true })) return;
+      }
+      tryCommitTyped({ fromEnter: true });
+    }
+
     input.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
@@ -1083,12 +1165,7 @@
         if (openWhich !== 'artist') openArtistList({ fullList: !input.value.trim(), query: input.value });
         moveHighlight('artist-listbox', 'artist-input', -1);
       } else if (e.key === 'Enter') {
-        e.preventDefault();
-        // Commit and close; do not leave the list open (mobile re-focus path)
-        if (openWhich === 'artist' && highlightIndex >= 0) {
-          if (pickHighlighted('artist-listbox', pickArtist)) return;
-        }
-        tryCommitTyped();
+        onArtistEnter(e);
       } else if (e.key === 'Backspace' && !String(input.value || '') && artistRules.length) {
         // Empty field + Backspace removes last chip (list stays closed)
         e.preventDefault();
@@ -1106,18 +1183,41 @@
         }
       }
     });
+    // Some mobile WebViews still advance focus on keypress/keyup Enter
+    input.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    });
+    input.addEventListener('keyup', function (e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    });
 
     input.addEventListener('blur', function () {
-      if (ignoreBlur) {
+      if (ignoreBlur || suppressArtistBlurCommit) {
         ignoreBlur = false;
         return;
       }
       setTimeout(function () {
-        if (ignoreBlur) {
+        if (ignoreBlur || suppressArtistBlurCommit) {
           ignoreBlur = false;
           return;
         }
         if (document.activeElement === input) return;
+        // If focus fled to Search (or elsewhere) right after Enter, reclaim quietly
+        var ae = document.activeElement;
+        if (
+          ae &&
+          ae !== input &&
+          (ae.id === 'search-input' || (ae.tagName === 'INPUT' && ae !== input))
+        ) {
+          // only reclaim when we just committed / suppressed
+          return;
+        }
         if (openWhich === 'artist') {
           if (String(input.value || '').trim()) tryCommitTyped();
           else {
