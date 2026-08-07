@@ -248,7 +248,7 @@
       <div class="panel-head">
         <div>
           <h2 class="section-title" id="select-heading">Library</h2>
-          <p class="section-sub">Filter by genre and/or artist</p>
+          <p class="section-sub">Filter by genre and/or artist — type a name and Enter for all collabs</p>
         </div>
         <button type="button" id="click-to-play-button" class="btn-primary">Play selection</button>
       </div>
@@ -306,6 +306,7 @@
                 aria-label="Show artist list"
               >▾</button>
               <input type="hidden" id="dropArtist" name="dropArtist" value="All" />
+              <input type="hidden" id="dropArtistMode" name="dropArtistMode" value="exact" />
               <ul id="artist-listbox" class="combobox-list" role="listbox" hidden></ul>
             </div>
           </div>

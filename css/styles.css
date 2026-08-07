@@ -1466,6 +1466,19 @@ button:focus-visible,
   opacity: 0.85;
 }
 
+/* “All involving …” row — collabs + solo for a typed singer */
+.combobox-option.is-involves {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.2rem;
+  padding-bottom: 0.65rem;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.combobox-option.is-involves.is-selected::after {
+  content: ' +';
+}
+
 .combobox-empty {
   padding: 0.65rem 0.75rem;
   color: var(--text-muted);

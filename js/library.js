@@ -25,6 +25,13 @@
   /** Ignore blur when clicking an option / toggle */
   let ignoreBlur = false;
 
+  /**
+   * How the committed artist filter matches tracks:
+   * - exact: m.artist === value (one credit string)
+   * - involves: singer appears in credit (collabs included)
+   */
+  let artistMatchMode = 'exact';
+
   function readListOpenPref() {
     try {
       var raw = localStorage.getItem(LIST_OPEN_KEY);
@@ -74,6 +81,7 @@
     artistOptions = [];
     openWhich = null;
     highlightIndex = -1;
+    artistMatchMode = 'exact';
     refreshSelects({ preserve: false });
     bind();
     applyListOpenUI();
@@ -90,8 +98,19 @@
     return (el && el.value) || 'All';
   }
 
+  function getArtistMatchMode() {
+    return artistMatchMode === 'involves' ? 'involves' : 'exact';
+  }
+
   function displayValue(value) {
     return value && value !== 'All' ? value : 'All';
+  }
+
+  /** Visible combobox text; "+" suffix marks involves (collabs) mode */
+  function displayArtistValue(value, mode) {
+    if (!value || value === 'All') return 'All';
+    if (mode === 'involves') return value + ' +';
+    return value;
   }
 
   function setCommittedGenre(genre) {
@@ -103,19 +122,27 @@
   }
 
   /**
-   * Set committed artist (hidden field). Optionally sync the visible input.
+   * Set committed artist (hidden field + match mode). Optionally sync the visible input.
    * @param {string} artist
-   * @param {{ syncInput?: boolean, forceSync?: boolean }} opts
+   * @param {{ syncInput?: boolean, forceSync?: boolean, mode?: string }} opts
    */
   function setCommittedArtist(artist, opts) {
     opts = opts || {};
     var val = artist || 'All';
+    if (opts.mode === 'involves' || opts.mode === 'exact') {
+      artistMatchMode = val === 'All' ? 'exact' : opts.mode;
+    } else if (val === 'All') {
+      artistMatchMode = 'exact';
+    }
+    var mode = getArtistMatchMode();
     var hidden = document.getElementById('dropArtist');
+    var modeEl = document.getElementById('dropArtistMode');
     var input = document.getElementById('artist-input');
     if (hidden) hidden.value = val;
+    if (modeEl) modeEl.value = mode;
     if (opts.syncInput === false || !input) return;
     if (opts.forceSync || !(openWhich === 'artist' && document.activeElement === input)) {
-      input.value = displayValue(val);
+      input.value = displayArtistValue(val, mode);
     }
   }
 
@@ -126,11 +153,33 @@
     });
   }
 
-  function tracksForArtist(artist) {
+  /** True if track matches the artist filter (exact credit or involves singer). */
+  function trackMatchesArtist(m, artist, mode) {
+    if (!artist || artist === 'All') return true;
+    mode = mode || getArtistMatchMode();
+    if (mode === 'involves') {
+      return MPUtils.matchesQuery(m.artist, artist);
+    }
+    return m.artist === artist;
+  }
+
+  function tracksForArtist(artist, mode) {
     if (!artist || artist === 'All') return allMusics.slice();
+    mode = mode != null ? mode : getArtistMatchMode();
     return allMusics.filter(function (m) {
-      return m.artist === artist;
+      return trackMatchesArtist(m, artist, mode);
     });
+  }
+
+  function countTracksInvolving(query, genre) {
+    var q = String(query || '').trim();
+    if (!q) return 0;
+    var pool = tracksForGenre(genre != null ? genre : getGenre());
+    var n = 0;
+    for (var i = 0; i < pool.length; i++) {
+      if (MPUtils.matchesQuery(pool[i].artist, q)) n++;
+    }
+    return n;
   }
 
   function uniqueSorted(values) {
@@ -156,6 +205,13 @@
 
     var curGenre = opts.genre != null ? opts.genre : getGenre();
     var curArtist = opts.artist != null ? opts.artist : getArtist();
+    var curMode =
+      opts.artistMode != null
+        ? opts.artistMode
+        : opts.mode != null
+          ? opts.mode
+          : getArtistMatchMode();
+    if (curArtist === 'All') curMode = 'exact';
 
     var artistPool = tracksForGenre(curGenre);
     var artists = uniqueSorted(
@@ -164,15 +220,28 @@
       })
     );
 
-    var genrePool = tracksForArtist(curArtist);
+    var genrePool = tracksForArtist(curArtist, curMode);
     var genres = uniqueSorted(
       genrePool.map(function (m) {
         return m.genre;
       })
     );
 
-    if (curArtist !== 'All' && artists.indexOf(curArtist) === -1) {
+    // Exact: committed credit must still appear under this genre.
+    // Involves: at least one track under this genre must still match the singer.
+    var artistStillValid = true;
+    if (curArtist !== 'All') {
+      if (curMode === 'involves') {
+        artistStillValid = artistPool.some(function (m) {
+          return trackMatchesArtist(m, curArtist, 'involves');
+        });
+      } else {
+        artistStillValid = artists.indexOf(curArtist) !== -1;
+      }
+    }
+    if (!artistStillValid) {
       curArtist = 'All';
+      curMode = 'exact';
       genrePool = allMusics;
       genres = uniqueSorted(
         genrePool.map(function (m) {
@@ -195,7 +264,7 @@
     artistOptions = artists;
 
     setCommittedGenre(curGenre);
-    setCommittedArtist(curArtist, { forceSync: true, syncInput: true });
+    setCommittedArtist(curArtist, { forceSync: true, syncInput: true, mode: curMode });
 
     if (openWhich === 'genre') renderGenreList();
     if (openWhich === 'artist') {
@@ -214,9 +283,10 @@
     return out;
   }
 
-  function renderOptionList(listId, idPrefix, entries, committed, onPick) {
+  function renderOptionList(listId, idPrefix, entries, committed, onPick, committedMode) {
     var list = document.getElementById(listId);
     if (!list) return;
+    committedMode = committedMode || 'exact';
 
     list.innerHTML = '';
 
@@ -235,21 +305,27 @@
     var frag = document.createDocumentFragment();
     for (var i = 0; i < entries.length; i++) {
       (function (entry, index) {
+        var mode = entry.mode || 'exact';
         var li = document.createElement('li');
         li.className = 'combobox-option';
+        if (entry.involves) li.classList.add('is-involves');
         li.setAttribute('role', 'option');
         li.id = idPrefix + index;
         li.dataset.value = entry.value;
-        li.setAttribute('aria-selected', entry.value === committed ? 'true' : 'false');
+        li.dataset.mode = mode;
+        var selected =
+          entry.value === committed &&
+          (committed === 'All' || mode === committedMode || (entry.involves && committedMode === 'involves'));
+        li.setAttribute('aria-selected', selected ? 'true' : 'false');
         if (index === highlightIndex) li.classList.add('is-active');
-        if (entry.value === committed) li.classList.add('is-selected');
+        if (selected) li.classList.add('is-selected');
         li.textContent = entry.label;
         li.addEventListener('mousedown', function (e) {
           e.preventDefault();
           ignoreBlur = true;
         });
         li.addEventListener('click', function () {
-          onPick(entry.value);
+          onPick(entry.value, mode);
           ignoreBlur = false;
         });
         frag.appendChild(li);
@@ -352,7 +428,7 @@
     var list = document.getElementById(listId);
     var opt = list && list.querySelectorAll('.combobox-option')[highlightIndex];
     if (!opt) return false;
-    onPick(opt.dataset.value);
+    onPick(opt.dataset.value, opt.dataset.mode || 'exact');
     return true;
   }
 
@@ -383,7 +459,11 @@
     lastChanged = 'genre';
     setCommittedGenre(value);
     closeAllDropdowns();
-    refreshSelects({ genre: value || 'All', artist: getArtist() });
+    refreshSelects({
+      genre: value || 'All',
+      artist: getArtist(),
+      artistMode: getArtistMatchMode(),
+    });
     renderTable();
   }
 
@@ -500,10 +580,17 @@
     });
   }
 
-  // ── Artist combobox (type-ahead) ─────────────────────────────────
+  // ── Artist combobox (type-ahead + involves) ──────────────────────
+
+  /** Strip involves display suffix " +" if user left it in the field */
+  function stripArtistDisplaySuffix(raw) {
+    var s = String(raw || '').trim();
+    if (s.length > 2 && s.slice(-2) === ' +') s = s.slice(0, -2).trim();
+    return s;
+  }
 
   function filteredArtistEntries(query) {
-    var q = String(query || '').trim();
+    var q = stripArtistDisplaySuffix(query);
     var names = artistOptions;
     var out = [];
 
@@ -511,12 +598,28 @@
       return entriesFromNames(names);
     }
 
+    // Prefer collabs: first row applies involves match for the typed query
+    var involveCount = countTracksInvolving(q, getGenre());
+    if (involveCount > 0) {
+      out.push({
+        value: q,
+        label:
+          'All involving “' +
+          q +
+          '” (' +
+          involveCount +
+          (involveCount === 1 ? ' song)' : ' songs)'),
+        mode: 'involves',
+        involves: true,
+      });
+    }
+
     if ('all'.indexOf(q.toLowerCase()) === 0) {
-      out.push({ value: 'All', label: 'All' });
+      out.push({ value: 'All', label: 'All', mode: 'exact' });
     }
     for (var j = 0; j < names.length; j++) {
       if (MPUtils.matchesQuery(names[j], q)) {
-        out.push({ value: names[j], label: names[j] });
+        out.push({ value: names[j], label: names[j], mode: 'exact' });
       }
     }
     return out;
@@ -538,7 +641,14 @@
       return;
     }
 
-    renderOptionList('artist-listbox', 'artist-opt-', entries, getArtist(), pickArtist);
+    renderOptionList(
+      'artist-listbox',
+      'artist-opt-',
+      entries,
+      getArtist(),
+      pickArtist,
+      getArtistMatchMode()
+    );
   }
 
   function openArtistList(opts) {
@@ -558,32 +668,59 @@
     renderArtistList(q);
   }
 
-  function pickArtist(value) {
+  /**
+   * @param {string} value
+   * @param {string} [mode] 'exact' | 'involves'
+   */
+  function pickArtist(value, mode) {
     lastChanged = 'artist';
-    setCommittedArtist(value, { forceSync: true, syncInput: true });
+    var m = mode === 'involves' ? 'involves' : 'exact';
+    if (!value || value === 'All') {
+      value = 'All';
+      m = 'exact';
+    }
+    setCommittedArtist(value, { forceSync: true, syncInput: true, mode: m });
     closeAllDropdowns();
-    refreshSelects({ genre: getGenre(), artist: value || 'All' });
+    refreshSelects({ genre: getGenre(), artist: value || 'All', artistMode: m });
     renderTable();
   }
 
   function restoreArtistInput() {
     var input = document.getElementById('artist-input');
-    if (input) input.value = displayValue(getArtist());
+    if (input) input.value = displayArtistValue(getArtist(), getArtistMatchMode());
   }
 
+  /**
+   * Commit free text: prefers involves (all collabs) when Enter/blur with a typed query.
+   * Highlighted list row is handled separately before this is called.
+   */
   function tryCommitTyped() {
     var input = document.getElementById('artist-input');
     if (!input) return false;
-    var raw = String(input.value || '').trim();
+    var raw = stripArtistDisplaySuffix(input.value);
     if (!raw || raw.toLowerCase() === 'all') {
-      if (getArtist() !== 'All') {
-        pickArtist('All');
+      if (getArtist() !== 'All' || getArtistMatchMode() !== 'exact') {
+        pickArtist('All', 'exact');
       } else {
         restoreArtistInput();
         closeArtistList();
       }
       return true;
     }
+
+    var involveCount = countTracksInvolving(raw, getGenre());
+    if (involveCount > 0) {
+      // Typed Enter / blur → involves (solo + collabs)
+      if (getArtist() === raw && getArtistMatchMode() === 'involves') {
+        restoreArtistInput();
+        closeArtistList();
+      } else {
+        pickArtist(raw, 'involves');
+      }
+      return true;
+    }
+
+    // No involves hit under current genre — try exact credit only
     var exact = null;
     for (var i = 0; i < artistOptions.length; i++) {
       if (artistOptions[i] === raw) {
@@ -601,20 +738,10 @@
       }
     }
     if (exact) {
-      if (getArtist() !== exact) pickArtist(exact);
-      else {
-        restoreArtistInput();
-        closeArtistList();
-      }
+      pickArtist(exact, 'exact');
       return true;
     }
-    var entries = filteredArtistEntries(raw).filter(function (e) {
-      return e.value !== 'All';
-    });
-    if (entries.length === 1) {
-      pickArtist(entries[0].value);
-      return true;
-    }
+
     restoreArtistInput();
     closeArtistList();
     return false;
@@ -721,9 +848,10 @@
   function getFiltered() {
     var genre = getGenre();
     var artist = getArtist();
+    var mode = getArtistMatchMode();
     return allMusics.filter(function (m) {
       var gOk = genre === 'All' || m.genre === genre;
-      var aOk = artist === 'All' || m.artist === artist;
+      var aOk = trackMatchesArtist(m, artist, mode);
       return gOk && aOk;
     });
   }
@@ -814,12 +942,15 @@
     return 'Random';
   }
 
-  function setFilters(genre, artist) {
+  function setFilters(genre, artist, artistMode) {
     lastChanged = null;
     closeAllDropdowns();
+    var mode = artistMode === 'involves' ? 'involves' : 'exact';
+    if (!artist || artist === 'All') mode = 'exact';
     refreshSelects({
       genre: genre || 'All',
       artist: artist || 'All',
+      artistMode: mode,
     });
     renderTable();
   }
@@ -831,6 +962,7 @@
     getModePreference: getModePreference,
     setFilters: setFilters,
     getArtist: getArtist,
+    getArtistMatchMode: getArtistMatchMode,
     getGenre: getGenre,
     renderTable: renderTable,
     get byId() {

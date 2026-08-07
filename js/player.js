@@ -31,7 +31,7 @@
    * Scope of the *active* play session (applied via Play selection / search / restore).
    * Not the pending Library dropdowns — those may differ until the user applies them.
    */
-  let sessionScope = { genre: 'All', artist: 'All' };
+  let sessionScope = { genre: 'All', artist: 'All', artistMode: 'exact' };
   let playCounts = new Map();
   let urlAttempt = 0;
   let currentTrack = null;
@@ -390,6 +390,7 @@
   function captureSessionScopeFromUI() {
     var genre = 'All';
     var artist = 'All';
+    var artistMode = 'exact';
     if (window.MPLibrary && typeof MPLibrary.getGenre === 'function') {
       genre = MPLibrary.getGenre() || 'All';
     } else {
@@ -400,16 +401,26 @@
     } else {
       artist = (document.getElementById('dropArtist') || {}).value || 'All';
     }
-    sessionScope = { genre: genre, artist: artist };
+    if (window.MPLibrary && typeof MPLibrary.getArtistMatchMode === 'function') {
+      artistMode = MPLibrary.getArtistMatchMode() || 'exact';
+    } else {
+      artistMode = (document.getElementById('dropArtistMode') || {}).value || 'exact';
+    }
+    if (artist === 'All') artistMode = 'exact';
+    sessionScope = { genre: genre, artist: artist, artistMode: artistMode };
   }
 
-  function formatSessionScopeLabel(genre, artist) {
+  function formatSessionScopeLabel(genre, artist, artistMode) {
     genre = genre || 'All';
     artist = artist || 'All';
+    artistMode = artistMode || 'exact';
     if (genre === 'All' && artist === 'All') return 'All Songs';
-    if (genre === 'All') return artist + "'s Songs";
+    // Involves: singer + collabs — mark with + so the pill matches the filter field
+    var artistLabel =
+      artist !== 'All' && artistMode === 'involves' ? artist + '+' : artist;
+    if (genre === 'All') return artistLabel + "'s Songs";
     if (artist === 'All') return genre + ' Songs';
-    return artist + "'s " + genre + ' Songs';
+    return artistLabel + "'s " + genre + ' Songs';
   }
 
   function setQueue(tracks, startId, preferredMode) {
@@ -466,7 +477,11 @@
     }
     const label = document.getElementById('current-play-mode');
     if (label) {
-      const scope = formatSessionScopeLabel(sessionScope.genre, sessionScope.artist);
+      const scope = formatSessionScopeLabel(
+        sessionScope.genre,
+        sessionScope.artist,
+        sessionScope.artistMode
+      );
       label.textContent = scope + ' · ' + mode;
     }
   }
@@ -1057,6 +1072,7 @@
       // Persist *session* scope (what is playing), not pending dropdown filters
       genre: sessionScope.genre || 'All',
       artist: sessionScope.artist || 'All',
+      artistMode: sessionScope.artistMode === 'involves' ? 'involves' : 'exact',
     });
   }
 
@@ -1071,6 +1087,7 @@
       sessionScope = {
         genre: state.genre || 'All',
         artist: state.artist || 'All',
+        artistMode: state.artistMode === 'involves' ? 'involves' : 'exact',
       };
     }
     updateModeUI();
