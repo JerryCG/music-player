@@ -24,6 +24,11 @@
   let highlightIndex = -1;
   /** Ignore blur when clicking an option / toggle */
   let ignoreBlur = false;
+  /**
+   * After adding a chip we re-focus the input for the next name, but must not
+   * re-open the list (mobile Chrome: Enter blurs then focus() fires open again).
+   */
+  let suppressArtistListOpen = false;
 
   /**
    * Selected artist rules (OR). Empty = All artists.
@@ -916,6 +921,9 @@
 
   function openArtistList(opts) {
     opts = opts || {};
+    // Programmatic re-focus after pick must not pop the list open again
+    if (suppressArtistListOpen && !opts.force) return;
+
     if (openWhich === 'genre') closeGenreList();
 
     var list = document.getElementById('artist-listbox');
@@ -931,6 +939,24 @@
     renderArtistList(q);
   }
 
+  /** Focus artist input for the next add without re-opening the dropdown */
+  function focusArtistInputQuietly() {
+    var input = document.getElementById('artist-input');
+    if (!input) return;
+    suppressArtistListOpen = true;
+    try {
+      input.focus({ preventScroll: true });
+    } catch (_) {
+      try {
+        input.focus();
+      } catch (_) {}
+    }
+    // Clear flag after focus/blur churn (mobile keyboard / Enter)
+    setTimeout(function () {
+      suppressArtistListOpen = false;
+    }, 300);
+  }
+
   /**
    * Add artist rule (or clear if All). Does not replace existing chips.
    * @param {string} value
@@ -943,6 +969,7 @@
       closeAllDropdowns();
       refreshSelects({ genre: getGenre() });
       renderTable();
+      focusArtistInputQuietly();
       return;
     }
     var m = mode === 'involves' ? 'involves' : 'exact';
@@ -951,13 +978,8 @@
     closeAllDropdowns();
     refreshSelects({ genre: getGenre(), clearArtistInput: true });
     renderTable();
-    // Keep focus ready for next singer
-    var input = document.getElementById('artist-input');
-    if (input) {
-      try {
-        input.focus();
-      } catch (_) {}
-    }
+    // Ready for next singer — keep keyboard if open, but do not reopen the list
+    focusArtistInputQuietly();
   }
 
   function restoreArtistInput() {
@@ -1035,6 +1057,7 @@
     renderArtistChips();
 
     input.addEventListener('focus', function () {
+      if (suppressArtistListOpen) return;
       openArtistList({
         fullList: !String(input.value || '').trim(),
         query: String(input.value || '').trim() ? input.value : '',
@@ -1042,27 +1065,32 @@
     });
 
     input.addEventListener('input', function () {
+      // User typing: always allow list (clears post-pick suppress from focus-only path)
+      suppressArtistListOpen = false;
       highlightIndex = -1;
-      openArtistList({ query: input.value, resetHighlight: true, fullList: false });
+      openArtistList({ query: input.value, resetHighlight: true, fullList: false, force: true });
     });
 
     input.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
+        suppressArtistListOpen = false;
         if (openWhich !== 'artist') openArtistList({ fullList: !input.value.trim(), query: input.value });
         moveHighlight('artist-listbox', 'artist-input', 1);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
+        suppressArtistListOpen = false;
         if (openWhich !== 'artist') openArtistList({ fullList: !input.value.trim(), query: input.value });
         moveHighlight('artist-listbox', 'artist-input', -1);
       } else if (e.key === 'Enter') {
         e.preventDefault();
+        // Commit and close; do not leave the list open (mobile re-focus path)
         if (openWhich === 'artist' && highlightIndex >= 0) {
           if (pickHighlighted('artist-listbox', pickArtist)) return;
         }
         tryCommitTyped();
       } else if (e.key === 'Backspace' && !String(input.value || '') && artistRules.length) {
-        // Empty field + Backspace removes last chip
+        // Empty field + Backspace removes last chip (list stays closed)
         e.preventDefault();
         removeArtistRuleAt(artistRules.length - 1);
       } else if (e.key === 'Escape') {
