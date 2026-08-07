@@ -862,7 +862,8 @@ function getMusics() {
     {id:859,name:"绿袖子",artist:"Richard Clayderman",genre:"Light Music",file:"lvxiuzi_richardclayderman.mp3"},
     {id:860,name:"秘密的庭院",artist:"Richard Clayderman",genre:"Light Music",file:"mimidetingyuan_richardclayderman.mp3"},
     {id:861,name:"星星小夜曲",artist:"Richard Clayderman",genre:"Light Music",file:"xingxingxiaoyequ_richardclayderman.mp3"},
-    {id:862,name:"托卡塔曲",artist:"Richard Clayderman",genre:"Epic",file:"tuokataqu_richardclayderman.mp3"}
+    {id:862,name:"托卡塔曲",artist:"Richard Clayderman",genre:"Epic",file:"tuokataqu_richardclayderman.mp3"},
+    {id:863,name:"山水又一程",artist:"那英",genre:"Chinese Ancientry",file:"shanshuiyouyicheng_naying.mp3"}
   ];
 }
 
