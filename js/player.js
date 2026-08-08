@@ -505,12 +505,39 @@
    * Pill always reflects the *playing* session (last applied queue scope + mode),
    * never the pending Library filter dropdowns.
    */
+  /**
+   * Mode icons — monochrome SVG (currentColor = gold).
+   * Random: two thick S-ribbons crossing (Dreamstime shuffle style); both heads → right.
+   * Loop: dual U-turns (Magnific media-loop style) — not a single ↻ like Replay.
+   */
+  const MODE_ICON_RANDOM =
+    '<svg class="ctrl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    // TL → BR: start/end same vertical span (y≈8.2↔16) so left isn’t taller than right
+    '<path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="butt" stroke-linejoin="round" d="M2 8.2h2.6c2.5 0 4 1.6 5.6 3.9 1.5 2.3 3 3.9 5.4 3.9H18.6"/>' +
+    '<path fill="currentColor" stroke="none" d="M16.8 13 22 16l-5.2 3z"/>' +
+    // BL → TR: mirror — ends at y≈8.2
+    '<path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="butt" stroke-linejoin="round" d="M2 15.8h2.6c2.5 0 4-1.6 5.6-3.9 1.5-2.3 3-3.9 5.4-3.9H18.6"/>' +
+    '<path fill="currentColor" stroke="none" d="M16.8 11 22 8l-5.2-3z"/>' +
+    '</svg>';
+  const MODE_ICON_LOOP =
+    '<svg class="ctrl-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    // Top: open U on left + clean triangle → right
+    '<path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M6 12.2C6 7.8 9 5.4 13.6 5.4H16.5"/>' +
+    '<path fill="currentColor" stroke="none" d="M15.6 2.8 21.2 5.4l-5.6 2.6z"/>' +
+    // Bottom: open U on right + clean triangle → left
+    '<path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M18 11.8c0 4.4-3 6.8-7.6 6.8H7.5"/>' +
+    '<path fill="currentColor" stroke="none" d="M8.4 21.2 2.8 18.6l5.6-2.6z"/>' +
+    '</svg>';
+
   function updateModeUI() {
     const btn = document.getElementById('mode-button');
     if (btn) {
-      btn.textContent = mode;
+      const isLoop = mode === 'Loop';
+      btn.innerHTML = isLoop ? MODE_ICON_LOOP : MODE_ICON_RANDOM;
       btn.setAttribute('aria-label', 'Play mode: ' + mode);
-      btn.title = 'Play mode: ' + mode + ' (click to toggle)';
+      btn.title = isLoop
+        ? 'Loop mode — click for Random'
+        : 'Random mode — click for Loop';
     }
     const label = document.getElementById('current-play-mode');
     if (label) {
