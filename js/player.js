@@ -4,7 +4,8 @@
  * Strategy:
  *  - Stream via range-request URLs (never full-file blob unless last-resort).
  *  - Shadow <audio> preloads the *planned* next track while current plays.
- *  - Random mode picks the next track early so preload is useful.
+ *  - Random mode uses a shuffled play order (prev/next walk that list; reshuffle
+ *    when the list is exhausted) so back/forward stay predictable.
  *  - Slow primary source → timed failover to alternate CDN.
  *  - Mid-play stall recovery (wait, then gentle re-seek / alternate URL).
  *  - Background / lock-screen continuity (Android PWA): keep playbackIntent,
@@ -27,6 +28,19 @@
   let queue = [];
   let queueIndex = -1;
   let mode = 'Random';
+  /**
+   * Random-mode play order: permutation of queue indices.
+   * prev/next move shufflePos; when the order is finished, a new permutation is built.
+   * @type {number[]}
+   */
+  let shuffleOrder = [];
+  /** Position within shuffleOrder (−1 if unset). */
+  let shufflePos = -1;
+  /**
+   * Precomputed next-cycle order once we are on the last shuffle track (for preload).
+   * @type {number[]|null}
+   */
+  let nextShuffleOrder = null;
   /**
    * Scope of the *active* play session (applied via Play selection / search / restore).
    * Not the pending Library dropdowns — those may differ until the user applies them.
@@ -466,13 +480,17 @@
     // New queue = new active session; scope follows filters *at apply time*
     captureSessionScopeFromUI();
     resetPlayCounts();
+    clearShuffleState();
     upcomingTrack = null;
     clearPreloader();
-    if (startId != null) {
+    if (mode === 'Random' && queue.length) {
+      // Build a full shuffle; optional start track is first so prev/next stay coherent
+      rebuildShuffleOrder(startId != null ? startId : null, null);
+      shufflePos = 0;
+      queueIndex = shuffleOrder[0];
+    } else if (startId != null) {
       const idx = queue.findIndex((t) => t.id === startId);
       queueIndex = idx >= 0 ? idx : 0;
-    } else if (mode === 'Random' && queue.length) {
-      queueIndex = Math.floor(Math.random() * queue.length);
     } else {
       queueIndex = queue.length ? 0 : -1;
     }
@@ -489,6 +507,22 @@
     resetPlayCounts();
     upcomingTrack = null;
     clearPreloader();
+    if (mode === 'Random') {
+      // Keep the song that is playing as the current shuffle position (first)
+      const curId = currentTrack && currentTrack.id;
+      rebuildShuffleOrder(curId != null ? curId : null, null);
+      shufflePos = 0;
+      if (shuffleOrder.length) queueIndex = shuffleOrder[0];
+    } else {
+      clearShuffleState();
+      // Loop uses natural catalog order; snap queueIndex to current track
+      if (currentTrack) {
+        const idx = queue.findIndex(function (t) {
+          return t.id === currentTrack.id;
+        });
+        if (idx >= 0) queueIndex = idx;
+      }
+    }
     updateModeUI();
     emit('mode', mode);
     persist();
@@ -559,6 +593,102 @@
     for (const t of queue) playCounts.set(t.id, 0);
   }
 
+  function clearShuffleState() {
+    shuffleOrder = [];
+    shufflePos = -1;
+    nextShuffleOrder = null;
+  }
+
+  /**
+   * Fisher–Yates permutation of queue indices.
+   * @param {number|string|null} preferFirstId - place this track first (new session / pick)
+   * @param {number|string|null} avoidFirstId - after a full pass, avoid starting with last song
+   * @returns {number[]}
+   */
+  function makeShuffleOrder(preferFirstId, avoidFirstId) {
+    const n = queue.length;
+    const order = [];
+    for (let i = 0; i < n; i++) order.push(i);
+    for (let i = n - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = order[i];
+      order[i] = order[j];
+      order[j] = tmp;
+    }
+    if (preferFirstId != null && n > 0) {
+      const qi = queue.findIndex(function (t) {
+        return t.id === preferFirstId;
+      });
+      if (qi >= 0) {
+        const pos = order.indexOf(qi);
+        if (pos > 0) {
+          order.splice(pos, 1);
+          order.unshift(qi);
+        } else if (pos < 0) {
+          order.unshift(qi);
+        }
+      }
+    } else if (avoidFirstId != null && n > 1) {
+      const qi = queue.findIndex(function (t) {
+        return t.id === avoidFirstId;
+      });
+      if (qi >= 0 && order[0] === qi) {
+        const j = 1 + Math.floor(Math.random() * (n - 1));
+        const tmp = order[0];
+        order[0] = order[j];
+        order[j] = tmp;
+      }
+    }
+    return order;
+  }
+
+  function rebuildShuffleOrder(preferFirstId, avoidFirstId) {
+    shuffleOrder = makeShuffleOrder(preferFirstId, avoidFirstId);
+    nextShuffleOrder = null;
+  }
+
+  /** Ensure Random has a valid order aligned with the current queue. */
+  function ensureShuffleReady() {
+    if (mode !== 'Random' || !queue.length) return false;
+    if (
+      !shuffleOrder.length ||
+      shuffleOrder.length !== queue.length ||
+      shuffleOrder.some(function (qi) {
+        return qi < 0 || qi >= queue.length;
+      })
+    ) {
+      const curId = currentTrack && currentTrack.id;
+      rebuildShuffleOrder(curId != null ? curId : null, null);
+      shufflePos = 0;
+      if (curId != null) {
+        const qi = queue.findIndex(function (t) {
+          return t.id === curId;
+        });
+        const sp = shuffleOrder.indexOf(qi);
+        if (sp >= 0) shufflePos = sp;
+      }
+    }
+    if (shufflePos < 0 || shufflePos >= shuffleOrder.length) {
+      // Snap pos to current track if possible
+      if (currentTrack) {
+        const qi = queue.findIndex(function (t) {
+          return t.id === currentTrack.id;
+        });
+        const sp = shuffleOrder.indexOf(qi);
+        shufflePos = sp >= 0 ? sp : 0;
+      } else {
+        shufflePos = 0;
+      }
+    }
+    return shuffleOrder.length > 0;
+  }
+
+  function trackAtShufflePos(pos) {
+    if (pos < 0 || pos >= shuffleOrder.length) return null;
+    const qi = shuffleOrder[pos];
+    return queue[qi] || null;
+  }
+
   function revokeObjectUrl() {
     if (objectUrl) {
       try {
@@ -594,17 +724,17 @@
       return queue[(queueIndex + 1) % queue.length];
     }
 
-    // Random: prefer unplayed, not current
-    let unplayed = queue.filter(function (t) {
-      return (playCounts.get(t.id) || 0) === 0 && t.id !== currentTrack.id;
-    });
-    if (!unplayed.length) {
-      unplayed = queue.filter(function (t) {
-        return t.id !== currentTrack.id;
-      });
+    // Random: next slot in the fixed shuffle order (prepare a new order at the end)
+    if (!ensureShuffleReady()) return null;
+    if (shufflePos + 1 < shuffleOrder.length) {
+      return trackAtShufflePos(shufflePos + 1);
     }
-    if (!unplayed.length) return queue[0] || null;
-    return unplayed[Math.floor(Math.random() * unplayed.length)];
+    // Last song in this pass — precompute the next cycle for preload
+    if (!nextShuffleOrder || nextShuffleOrder.length !== queue.length) {
+      nextShuffleOrder = makeShuffleOrder(null, currentTrack.id);
+    }
+    if (!nextShuffleOrder.length) return null;
+    return queue[nextShuffleOrder[0]] || null;
   }
 
   function ensureUpcomingAndPreload() {
@@ -904,11 +1034,13 @@
     if (newQueue && newQueue.length) {
       queue = newQueue.slice();
       resetPlayCounts();
+      clearShuffleState();
       queueReplaced = true;
     }
     if (!queue.length && window.MUSICS) {
       queue = window.MUSICS.slice();
       resetPlayCounts();
+      clearShuffleState();
       queueReplaced = true;
     }
     upcomingTrack = null;
@@ -916,10 +1048,16 @@
     const idx = queue.findIndex((t) => t.id === id);
     if (idx >= 0) {
       queueIndex = idx;
+      if (mode === 'Random') {
+        // New shuffle of this selection with the chosen song first
+        rebuildShuffleOrder(id, null);
+        shufflePos = 0;
+        queueIndex = shuffleOrder[0];
+      }
       if (queueReplaced && window.MPSleepTimer && MPSleepTimer.onQueueChange) {
         MPSleepTimer.onQueueChange();
       }
-      loadTrack(queue[idx], true);
+      loadTrack(queue[queueIndex], true);
     } else {
       const track =
         (window.MPLibrary && MPLibrary.byId.get(id)) ||
@@ -928,6 +1066,12 @@
         queue = [track];
         queueIndex = 0;
         resetPlayCounts();
+        if (mode === 'Random') {
+          rebuildShuffleOrder(track.id, null);
+          shufflePos = 0;
+        } else {
+          clearShuffleState();
+        }
         if (window.MPSleepTimer && MPSleepTimer.onQueueChange) {
           MPSleepTimer.onQueueChange();
         }
@@ -1021,32 +1165,27 @@
       return;
     }
 
-    // Random
-    if (!pick || (currentTrack && pick.id === currentTrack.id)) {
-      let unplayed = queue.filter(function (t) {
-        return (playCounts.get(t.id) || 0) === 0;
-      });
-      if (!unplayed.length) {
-        resetPlayCounts();
-        if (currentTrack) markPlayed(currentTrack.id);
-        unplayed = queue.filter(function (t) {
-          return (playCounts.get(t.id) || 0) === 0;
-        });
-        if (!unplayed.length) unplayed = queue.slice();
-        if (fromEnded) MPUtils.toast('All played — reshuffling');
+    // Random: walk the shuffle list; reshuffle after the last song
+    if (!ensureShuffleReady()) return;
+
+    if (shufflePos + 1 < shuffleOrder.length) {
+      shufflePos += 1;
+    } else {
+      // Full pass done — new random order of the same selection
+      const avoidId = currentTrack && currentTrack.id;
+      if (nextShuffleOrder && nextShuffleOrder.length === queue.length) {
+        shuffleOrder = nextShuffleOrder;
+        nextShuffleOrder = null;
+      } else {
+        rebuildShuffleOrder(null, avoidId);
       }
-      if (unplayed.length > 1 && currentTrack) {
-        unplayed = unplayed.filter(function (t) {
-          return t.id !== currentTrack.id;
-        });
-      }
-      pick = unplayed[Math.floor(Math.random() * unplayed.length)];
+      shufflePos = 0;
+      if (queue.length > 1) MPUtils.toast('All played — reshuffling');
     }
 
-    const idx = queue.findIndex(function (t) {
-      return t.id === pick.id;
-    });
-    queueIndex = idx >= 0 ? idx : queueIndex;
+    pick = trackAtShufflePos(shufflePos);
+    if (!pick) return;
+    queueIndex = shuffleOrder[shufflePos];
     advanceTo(pick);
   }
 
@@ -1054,17 +1193,26 @@
     if (!queue.length) return;
     playbackIntent = true;
     pendingPlayRetry = true;
+    upcomingTrack = null;
+    clearPreloader();
+
     if (mode === 'Loop') {
       queueIndex = (queueIndex - 1 + queue.length) % queue.length;
-      upcomingTrack = null;
-      clearPreloader();
       loadTrack(queue[queueIndex], true);
       return;
     }
-    // Random: discard planned next and draw again
-    upcomingTrack = null;
-    clearPreloader();
-    next(false);
+
+    // Random: step backward on the same shuffle list (wrap to end)
+    if (!ensureShuffleReady()) return;
+    if (shuffleOrder.length <= 1) {
+      loadTrack(queue[shuffleOrder[0] != null ? shuffleOrder[0] : 0], true);
+      return;
+    }
+    shufflePos = (shufflePos - 1 + shuffleOrder.length) % shuffleOrder.length;
+    // Stepping back invalidates a prepared next-cycle order
+    nextShuffleOrder = null;
+    queueIndex = shuffleOrder[shufflePos];
+    loadTrack(queue[queueIndex], true);
   }
 
   function seek(ratioOrTime, isRatio) {
