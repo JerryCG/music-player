@@ -999,7 +999,7 @@ function getMusics() {
             genre:"Electronic",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/zerodarkhundred.mp3?raw=true",
             name:"Zero Dark Hundred - PinOut OST",
-            artist:"unknown"
+            artist:"Douglas Holmquist"
         },
         {
             id:144,
@@ -1020,7 +1020,7 @@ function getMusics() {
             genre:"Electronic",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/theemeraldelectric.mp3?raw=true",
             name:"The Emerald Electric - PinOut OST",
-            artist:"unknown"
+            artist:"Douglas Holmquist"
         },
         {
             id:147,
