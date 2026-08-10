@@ -332,15 +332,38 @@
 
       <div class="selection-meta">
         <p id="selection-count"></p>
-        <button
-          type="button"
-          id="library-list-toggle"
-          class="ghost-btn library-list-toggle"
-          aria-expanded="false"
-          aria-controls="selected"
-        >
-          Show list
-        </button>
+        <div class="selection-meta-actions">
+          <div class="library-sort combobox" id="library-sort-root">
+            <button
+              type="button"
+              id="library-sort-btn"
+              class="ghost-btn library-sort-btn"
+              aria-label="Sort selected songs"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="library-sort-listbox"
+            >
+              <span id="library-sort-btn-text">Oldest first</span>
+              <span class="library-sort-caret" aria-hidden="true">▾</span>
+            </button>
+            <ul
+              id="library-sort-listbox"
+              class="combobox-list library-sort-list"
+              role="listbox"
+              aria-label="Sort options"
+              hidden
+            ></ul>
+          </div>
+          <button
+            type="button"
+            id="library-list-toggle"
+            class="ghost-btn library-list-toggle"
+            aria-expanded="false"
+            aria-controls="selected"
+          >
+            Show list
+          </button>
+        </div>
       </div>
       <div id="selected" class="is-collapsed" hidden></div>
     </section>

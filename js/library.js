@@ -5,6 +5,15 @@
  */
 (function () {
   const LIST_OPEN_KEY = 'mp-library-list-open';
+  const SORT_KEY = 'mp-library-sort';
+  /** @type {Record<string, string>} */
+  const SORT_LABELS = {
+    'id-asc': 'Oldest first',
+    'id-desc': 'Newest first',
+    'title-asc': 'Title A–Z',
+    'artist-asc': 'Artist A–Z',
+  };
+  const SORT_ORDER = ['id-asc', 'id-desc', 'title-asc', 'artist-asc'];
 
   let allMusics = [];
   let byId = new Map();
@@ -14,12 +23,18 @@
   let lastChanged = null;
   /** Track table collapsed by default; preference in localStorage */
   let listOpen = false;
+  /**
+   * Library list / Play selection order.
+   * Default id-asc = catalog order (earliest added first).
+   * @type {'id-asc'|'id-desc'|'title-asc'|'artist-asc'}
+   */
+  let sortMode = 'id-asc';
 
   /** Options valid under the active cascade */
   let genreOptions = [];
   let artistOptions = [];
 
-  /** Which dropdown is open: null | 'genre' | 'artist' */
+  /** Which dropdown is open: null | 'genre' | 'artist' | 'sort' */
   let openWhich = null;
   let highlightIndex = -1;
   /** Ignore blur when clicking an option / toggle */
@@ -55,6 +70,71 @@
     } catch (_) {}
   }
 
+  function readSortPref() {
+    try {
+      var raw = localStorage.getItem(SORT_KEY);
+      if (raw && SORT_LABELS[raw]) return raw;
+    } catch (_) {}
+    return 'id-asc';
+  }
+
+  function writeSortPref(mode) {
+    try {
+      localStorage.setItem(SORT_KEY, mode);
+    } catch (_) {}
+  }
+
+  function applySortUI() {
+    var btnText = document.getElementById('library-sort-btn-text');
+    var btn = document.getElementById('library-sort-btn');
+    var label = SORT_LABELS[sortMode] || SORT_LABELS['id-asc'];
+    if (btnText) btnText.textContent = label;
+    if (btn) btn.setAttribute('aria-label', 'Sort selected songs: ' + label);
+  }
+
+  /**
+   * Stable locale-aware compare for multi-script titles/artists.
+   * @param {string} a
+   * @param {string} b
+   */
+  function cmpText(a, b) {
+    return String(a || '').localeCompare(String(b || ''), undefined, {
+      sensitivity: 'base',
+      numeric: true,
+    });
+  }
+
+  /**
+   * @param {object[]} list
+   * @returns {object[]}
+   */
+  function sortTracks(list) {
+    var mode = sortMode;
+    var copy = list.slice();
+    copy.sort(function (a, b) {
+      if (mode === 'id-desc') {
+        return (b.id || 0) - (a.id || 0);
+      }
+      if (mode === 'title-asc') {
+        var tn = cmpText(a.name, b.name);
+        if (tn) return tn;
+        var ta = cmpText(a.artist, b.artist);
+        if (ta) return ta;
+        return (a.id || 0) - (b.id || 0);
+      }
+      if (mode === 'artist-asc') {
+        var aa = cmpText(a.artist, b.artist);
+        if (aa) return aa;
+        var an = cmpText(a.name, b.name);
+        if (an) return an;
+        return (a.id || 0) - (b.id || 0);
+      }
+      // id-asc (default): earliest added first
+      return (a.id || 0) - (b.id || 0);
+    });
+    return copy;
+  }
+
   function applyListOpenUI() {
     var container = document.getElementById('selected');
     var btn = document.getElementById('library-list-toggle');
@@ -84,6 +164,7 @@
     onPlayTrack = handlers.onPlayTrack || null;
     lastChanged = null;
     listOpen = readListOpenPref();
+    sortMode = readSortPref();
     genreOptions = [];
     artistOptions = [];
     openWhich = null;
@@ -92,6 +173,7 @@
     refreshSelects({ preserve: false });
     bind();
     applyListOpenUI();
+    applySortUI();
     renderTable();
   }
 
@@ -522,6 +604,11 @@
         inputId: 'artist-input',
         rootId: 'artist-combobox',
       },
+      sort: {
+        listId: 'library-sort-listbox',
+        inputId: 'library-sort-btn',
+        rootId: 'library-sort-root',
+      },
     };
     var cfg = configs[which];
     if (!cfg) return;
@@ -548,6 +635,7 @@
   function closeAllDropdowns() {
     if (openWhich === 'genre') setOpenState('genre', false);
     if (openWhich === 'artist') setOpenState('artist', false);
+    if (openWhich === 'sort') setOpenState('sort', false);
     openWhich = null;
     highlightIndex = -1;
   }
@@ -566,6 +654,123 @@
       openWhich = null;
       highlightIndex = -1;
     }
+  }
+
+  function closeSortList() {
+    if (openWhich === 'sort') {
+      setOpenState('sort', false);
+      openWhich = null;
+      highlightIndex = -1;
+    }
+  }
+
+  // ── Library sort custom select (Genre-style list + Show-list button chrome) ──
+
+  function renderSortList() {
+    var list = document.getElementById('library-sort-listbox');
+    if (!list) return;
+    list.innerHTML = '';
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < SORT_ORDER.length; i++) {
+      (function (value, index) {
+        var li = document.createElement('li');
+        li.id = 'sort-opt-' + index;
+        li.className = 'combobox-option';
+        li.setAttribute('role', 'option');
+        li.dataset.value = value;
+        var selected = value === sortMode;
+        li.setAttribute('aria-selected', selected ? 'true' : 'false');
+        if (index === highlightIndex) li.classList.add('is-active');
+        if (selected) li.classList.add('is-selected');
+        li.textContent = SORT_LABELS[value];
+        li.addEventListener('mousedown', function (e) {
+          e.preventDefault();
+          ignoreBlur = true;
+        });
+        li.addEventListener('click', function () {
+          pickSort(value);
+          ignoreBlur = false;
+        });
+        frag.appendChild(li);
+      })(SORT_ORDER[i], i);
+    }
+    list.appendChild(frag);
+    var active = list.querySelector('.combobox-option.is-active');
+    if (active && typeof active.scrollIntoView === 'function') {
+      active.scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function openSortList() {
+    if (openWhich === 'genre') closeGenreList();
+    if (openWhich === 'artist') {
+      restoreArtistInput();
+      closeArtistList();
+    }
+    openWhich = 'sort';
+    highlightIndex = Math.max(0, SORT_ORDER.indexOf(sortMode));
+    setOpenState('sort', true);
+    renderSortList();
+  }
+
+  function pickSort(value) {
+    if (!SORT_LABELS[value]) value = 'id-asc';
+    sortMode = value;
+    writeSortPref(sortMode);
+    applySortUI();
+    closeAllDropdowns();
+    renderTable();
+  }
+
+  function bindSortSelect() {
+    var btn = document.getElementById('library-sort-btn');
+    var root = document.getElementById('library-sort-root');
+    if (!btn || !root) return;
+
+    function openFromField() {
+      if (openWhich === 'sort') closeSortList();
+      else openSortList();
+    }
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      openFromField();
+    });
+
+    btn.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (openWhich !== 'sort') openSortList();
+        else moveHighlight('library-sort-listbox', 'library-sort-btn', 1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (openWhich !== 'sort') openSortList();
+        else moveHighlight('library-sort-listbox', 'library-sort-btn', -1);
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (openWhich === 'sort') {
+          if (highlightIndex >= 0 && SORT_ORDER[highlightIndex]) {
+            pickSort(SORT_ORDER[highlightIndex]);
+          } else {
+            closeSortList();
+          }
+        } else {
+          openSortList();
+        }
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeSortList();
+        btn.blur();
+      } else if (e.key === 'Tab') {
+        closeSortList();
+      }
+    });
+
+    document.addEventListener('mousedown', function (e) {
+      if (openWhich !== 'sort' || !root) return;
+      if (root.contains(e.target)) return;
+      closeSortList();
+    });
   }
 
   function moveHighlight(listId, inputId, delta) {
@@ -625,6 +830,7 @@
       restoreArtistInput();
       closeArtistList();
     }
+    if (openWhich === 'sort') closeSortList();
     openWhich = 'genre';
     highlightIndex = -1;
     setOpenState('genre', true);
@@ -927,6 +1133,7 @@
     if (suppressArtistListOpen && !opts.force) return;
 
     if (openWhich === 'genre') closeGenreList();
+    if (openWhich === 'sort') closeSortList();
 
     var list = document.getElementById('artist-listbox');
     var input = document.getElementById('artist-input');
@@ -1261,6 +1468,7 @@
   function bind() {
     bindGenreSelect();
     bindArtistCombobox();
+    bindSortSelect();
     var listToggle = document.getElementById('library-list-toggle');
     if (listToggle) {
       listToggle.addEventListener('click', function () {
@@ -1271,11 +1479,12 @@
 
   function getFiltered() {
     var genre = getGenre();
-    return allMusics.filter(function (m) {
+    var list = allMusics.filter(function (m) {
       var gOk = genre === 'All' || m.genre === genre;
       var aOk = trackMatchesArtistRules(m, artistRules);
       return gOk && aOk;
     });
+    return sortTracks(list);
   }
 
   function renderTable() {
@@ -1355,9 +1564,8 @@
   }
 
   function getSelectedTracks() {
-    return selectedIds.map(function (id) {
-      return byId.get(id);
-    }).filter(Boolean);
+    // Prefer live sorted filter (same order as table / Play selection)
+    return getFiltered();
   }
 
   function getModePreference() {
