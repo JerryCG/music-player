@@ -5942,6 +5942,97 @@ function getMusics() {
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/theawardgoesto_jessiej.mp3?raw=true",
             name:"The Award Goes To",
             artist:"Jessie J"
+        },,
+        {
+            id:864,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/smashhittheme_douglasholmquist.mp3?raw=true",
+            name:"Smash Hit Theme - Smash Hit OST",
+            artist:"Douglas Holmquist"
         },
+        {
+            id:865,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/start_douglasholmquist.mp3?raw=true",
+            name:"Start - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        },
+        {
+            id:866,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/part1_douglasholmquist.mp3?raw=true",
+            name:"Part 1 - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        },
+        {
+            id:867,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/part2_douglasholmquist.mp3?raw=true",
+            name:"Part 2 - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        },
+        {
+            id:868,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/part3_douglasholmquist.mp3?raw=true",
+            name:"Part 3 - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        },
+        {
+            id:869,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/part4_douglasholmquist.mp3?raw=true",
+            name:"Part 4 - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        },
+        {
+            id:870,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/part6_douglasholmquist.mp3?raw=true",
+            name:"Part 6 - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        },
+        {
+            id:871,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/part7_douglasholmquist.mp3?raw=true",
+            name:"Part 7 - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        },
+        {
+            id:872,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/part8_douglasholmquist.mp3?raw=true",
+            name:"Part 8 - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        },
+        {
+            id:873,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/part9_douglasholmquist.mp3?raw=true",
+            name:"Part 9 - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        },
+        {
+            id:874,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/part10_douglasholmquist.mp3?raw=true",
+            name:"Part 10 - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        },
+        {
+            id:875,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/part11_douglasholmquist.mp3?raw=true",
+            name:"Part 11 - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        },
+        {
+            id:876,
+            genre:"Electronic",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/endless_douglasholmquist.mp3?raw=true",
+            name:"Endless - Smash Hit OST",
+            artist:"Douglas Holmquist"
+        }
     ]
 }

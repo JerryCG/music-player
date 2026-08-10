@@ -863,7 +863,20 @@ function getMusics() {
     {id:860,name:"秘密的庭院",artist:"Richard Clayderman",genre:"Light Music",file:"mimidetingyuan_richardclayderman.mp3"},
     {id:861,name:"星星小夜曲",artist:"Richard Clayderman",genre:"Light Music",file:"xingxingxiaoyequ_richardclayderman.mp3"},
     {id:862,name:"托卡塔曲",artist:"Richard Clayderman",genre:"Epic",file:"tuokataqu_richardclayderman.mp3"},
-    {id:863,name:"山水又一程",artist:"那英",genre:"Chinese Ancientry",file:"shanshuiyouyicheng_naying.mp3"}
+    {id:863,name:"山水又一程",artist:"那英",genre:"Chinese Ancientry",file:"shanshuiyouyicheng_naying.mp3"},
+    {id:864,name:"Smash Hit Theme - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"smashhittheme_douglasholmquist.mp3"},
+    {id:865,name:"Start - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"start_douglasholmquist.mp3"},
+    {id:866,name:"Part 1 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part1_douglasholmquist.mp3"},
+    {id:867,name:"Part 2 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part2_douglasholmquist.mp3"},
+    {id:868,name:"Part 3 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part3_douglasholmquist.mp3"},
+    {id:869,name:"Part 4 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part4_douglasholmquist.mp3"},
+    {id:870,name:"Part 6 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part6_douglasholmquist.mp3"},
+    {id:871,name:"Part 7 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part7_douglasholmquist.mp3"},
+    {id:872,name:"Part 8 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part8_douglasholmquist.mp3"},
+    {id:873,name:"Part 9 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part9_douglasholmquist.mp3"},
+    {id:874,name:"Part 10 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part10_douglasholmquist.mp3"},
+    {id:875,name:"Part 11 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part11_douglasholmquist.mp3"},
+    {id:876,name:"Endless - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"endless_douglasholmquist.mp3"}
   ];
 }
 
