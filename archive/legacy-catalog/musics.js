@@ -2104,7 +2104,7 @@ function getMusics() {
             id:301,
             genre:"Electronic",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/somethingbeneath_douglasholmquist.mp3?raw=true",
-            name:"Something Beneath",
+            name:"Something Beneath - PinOut OST",
             artist:"Douglas Holmquist"
         },
         {
@@ -3126,7 +3126,7 @@ function getMusics() {
             id:447,
             genre:"Electronic",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/part5_douglasholmquist.mp3?raw=true",
-            name:"Part 5",
+            name:"Part 5 - Smash Hit OST",
             artist:"Douglas Holmquist"
         },
         {
