@@ -1132,7 +1132,7 @@ function getMusics() {
             genre:"Western Pop",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/buguniao_polina.mp3?raw=true",
             name:"Кукушка 布谷鸟",
-            artist:"Polina"
+            artist:"Polina Gagarina"
         },
         {
             id:163,
@@ -2245,21 +2245,21 @@ function getMusics() {
             genre:"Western Pop",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/amillionvoices_polina.mp3?raw=true",
             name:"A Million Voices",
-            artist:"Polina"
+            artist:"Polina Gagarina"
         },
         {
             id:322,
             genre:"Western Pop",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/hurt_polina.mp3?raw=true",
             name:"Hurt",
-            artist:"Polina"
+            artist:"Polina Gagarina"
         },
         {
             id:323,
             genre:"Western Pop",
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/yupiaoluozaishenbianyaolanqu_polina.mp3?raw=true",
             name:"Cтороноюдождь+Колыбельная（雨飘落在身边+摇篮曲）",
-            artist:"Polina"
+            artist:"Polina Gagarina"
         },
         {
             id:324,
