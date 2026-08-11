@@ -1578,23 +1578,53 @@
   /**
    * @param {string} genre
    * @param {string|Array} artist - 'All' | name | array of {value,mode}
-   * @param {string} [artistMode]
+   * @param {string} [artistMode] 'exact' | 'involves' (used when artist is a single name string)
    */
   function setFilters(genre, artist, artistMode) {
     lastChanged = null;
     closeAllDropdowns();
     var rules = null;
     if (Array.isArray(artist)) {
-      rules = artist;
+      rules = artist
+        .map(function (r) {
+          if (!r) return null;
+          if (typeof r === 'string') {
+            var s = String(r).trim();
+            if (!s || s === 'All') return null;
+            var inv = s.charAt(s.length - 1) === '+';
+            return {
+              value: inv ? s.slice(0, -1).trim() : s,
+              mode: inv ? 'involves' : 'exact',
+            };
+          }
+          var value = String(r.value || '').trim();
+          if (value.charAt(value.length - 1) === '+') {
+            value = value.slice(0, -1).trim();
+          }
+          if (!value || value === 'All') return null;
+          return {
+            value: value,
+            mode: r.mode === 'involves' ? 'involves' : 'exact',
+          };
+        })
+        .filter(Boolean);
     } else if (!artist || artist === 'All') {
       rules = [];
     } else {
-      rules = [
-        {
-          value: artist,
-          mode: artistMode === 'involves' ? 'involves' : 'exact',
-        },
-      ];
+      var name = String(artist).trim();
+      var involves = artistMode === 'involves';
+      if (name.charAt(name.length - 1) === '+') {
+        name = name.slice(0, -1).trim();
+        involves = true;
+      }
+      rules = name
+        ? [
+            {
+              value: name,
+              mode: involves ? 'involves' : 'exact',
+            },
+          ]
+        : [];
     }
     refreshSelects({
       genre: genre || 'All',

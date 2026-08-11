@@ -63,7 +63,9 @@
     const params = new URLSearchParams(window.location.search);
     const deepId = params.get('id') ? Number(params.get('id')) : null;
 
-    if (saved && saved.genre) MPLibrary.setFilters(saved.genre, saved.artist);
+    // Restore library filters including involves (Alan Walker+) and multi-chips.
+    // Must pass artistRules / artistMode — artist string alone loses the "+" mode.
+    restoreLibraryFilters(saved);
 
     let startList = MPLibrary.getSelectedTracks();
     if (!startList.length) startList = musics.slice();
@@ -94,6 +96,92 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
     }
+  }
+
+  /**
+   * Rebuild library Genre/Artist UI from persisted player session.
+   * Prefer full artistRules (with exact|involves). Fall back to artist + artistMode,
+   * and parse trailing "+" / " · " labels from older saves when needed.
+   */
+  function restoreLibraryFilters(saved) {
+    if (!saved || !window.MPLibrary || typeof MPLibrary.setFilters !== 'function') return;
+
+    var genre = saved.genre || 'All';
+    var rules = normalizeArtistRules(saved.artistRules);
+    if (rules && rules.length) {
+      MPLibrary.setFilters(genre, rules);
+      return;
+    }
+
+    var artist = saved.artist || 'All';
+    var mode = saved.artistMode === 'involves' ? 'involves' : 'exact';
+
+    // Multi label without rules (legacy): "A+ · B · C+"
+    if (artist !== 'All' && String(artist).indexOf(' · ') >= 0) {
+      var parsed = parseArtistLabelToRules(artist);
+      if (parsed.length) {
+        MPLibrary.setFilters(genre, parsed);
+        return;
+      }
+    }
+
+    // Single name that accidentally includes "+" in the stored artist field
+    if (artist !== 'All' && typeof artist === 'string') {
+      var stripped = stripInvolvesSuffix(artist);
+      if (stripped !== artist) {
+        artist = stripped;
+        mode = 'involves';
+      }
+    }
+
+    // artistMode alone (single involves) when artistRules missing
+    if (artist !== 'All' && mode === 'involves') {
+      MPLibrary.setFilters(genre, artist, 'involves');
+      return;
+    }
+
+    if (genre !== 'All' || artist !== 'All') {
+      MPLibrary.setFilters(genre, artist, mode);
+    }
+  }
+
+  function normalizeArtistRules(raw) {
+    if (!Array.isArray(raw) || !raw.length) return [];
+    var out = [];
+    for (var i = 0; i < raw.length; i++) {
+      var r = raw[i];
+      if (!r) continue;
+      var value = stripInvolvesSuffix(r.value || r.name || '');
+      if (!value || value === 'All') continue;
+      out.push({
+        value: value,
+        mode: r.mode === 'involves' ? 'involves' : 'exact',
+      });
+    }
+    return out;
+  }
+
+  function stripInvolvesSuffix(s) {
+    s = String(s || '').trim();
+    if (s.length > 1 && s.charAt(s.length - 1) === '+') {
+      return s.slice(0, -1).trim();
+    }
+    return s;
+  }
+
+  /** Parse "Alan Walker+ · 邓紫棋" → [{value, mode}, ...] */
+  function parseArtistLabelToRules(label) {
+    return String(label || '')
+      .split(' · ')
+      .map(function (part) {
+        part = String(part || '').trim();
+        if (!part) return null;
+        var involves = part.charAt(part.length - 1) === '+';
+        var value = involves ? part.slice(0, -1).trim() : part;
+        if (!value || value === 'All') return null;
+        return { value: value, mode: involves ? 'involves' : 'exact' };
+      })
+      .filter(Boolean);
   }
 
   function bindControls() {

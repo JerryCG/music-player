@@ -1281,15 +1281,39 @@
 
   function persist() {
     if (!currentTrack) return;
+    // Normalize rules so involves mode always round-trips (never rely on artist string alone)
+    var rules = (sessionScope.artistRules || [])
+      .map(function (r) {
+        if (!r || !r.value) return null;
+        var value = String(r.value).trim();
+        if (value.charAt(value.length - 1) === '+') value = value.slice(0, -1).trim();
+        if (!value || value === 'All') return null;
+        return {
+          value: value,
+          mode: r.mode === 'involves' ? 'involves' : 'exact',
+        };
+      })
+      .filter(Boolean);
+    var artist = sessionScope.artist || 'All';
+    var artistMode = sessionScope.artistMode || 'exact';
+    if (rules.length === 1) {
+      artist = rules[0].value;
+      artistMode = rules[0].mode;
+    } else if (!rules.length) {
+      artist = 'All';
+      artistMode = 'exact';
+    } else {
+      artistMode = 'multi';
+    }
     MPUtils.storageSet(STORAGE_KEY, {
       id: currentTrack.id,
       mode,
       position: audio ? audio.currentTime : 0,
       // Persist *session* scope (what is playing), not pending dropdown filters
       genre: sessionScope.genre || 'All',
-      artist: sessionScope.artist || 'All',
-      artistMode: sessionScope.artistMode || 'exact',
-      artistRules: sessionScope.artistRules || [],
+      artist: artist,
+      artistMode: artistMode,
+      artistRules: rules,
     });
   }
 
@@ -1301,12 +1325,44 @@
     if (!state || !state.id) return null;
     if (state.mode) mode = state.mode === 'Loop' ? 'Loop' : 'Random';
     if (state.genre || state.artist || (state.artistRules && state.artistRules.length)) {
+      var rules = Array.isArray(state.artistRules)
+        ? state.artistRules
+            .map(function (r) {
+              if (!r || !r.value) return null;
+              var value = String(r.value).trim();
+              if (value.charAt(value.length - 1) === '+') value = value.slice(0, -1).trim();
+              if (!value || value === 'All') return null;
+              return {
+                value: value,
+                mode: r.mode === 'involves' ? 'involves' : 'exact',
+              };
+            })
+            .filter(Boolean)
+        : [];
+      // Legacy: single artist + involves mode without rules array
+      if (
+        !rules.length &&
+        state.artist &&
+        state.artist !== 'All' &&
+        state.artistMode === 'involves'
+      ) {
+        var solo = String(state.artist).trim();
+        if (solo.charAt(solo.length - 1) === '+') solo = solo.slice(0, -1).trim();
+        if (solo) rules = [{ value: solo, mode: 'involves' }];
+      }
       sessionScope = {
         genre: state.genre || 'All',
         artist: state.artist || 'All',
         artistMode: state.artistMode || 'exact',
-        artistRules: Array.isArray(state.artistRules) ? state.artistRules : [],
+        artistRules: rules,
       };
+      if (rules.length === 1) {
+        sessionScope.artist = rules[0].value;
+        sessionScope.artistMode = rules[0].mode;
+      } else if (!rules.length) {
+        sessionScope.artist = 'All';
+        sessionScope.artistMode = 'exact';
+      }
     }
     updateModeUI();
     return state;
