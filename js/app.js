@@ -350,11 +350,6 @@
       const typing =
         tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable;
 
-      if (e.key === '/' && !typing) {
-        e.preventDefault();
-        MPSearch.focus();
-        return;
-      }
       if (typing) return;
 
       switch (e.key) {
@@ -383,6 +378,12 @@
         case 'p':
         case 'P':
           MPPlayer.previous();
+          break;
+        case 'm':
+        case 'M':
+          // Random ↔ Loop (same as mode button; toast already in toggleMode)
+          e.preventDefault();
+          MPPlayer.toggleMode();
           break;
         case 'l':
         case 'L':

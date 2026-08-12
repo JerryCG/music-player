@@ -96,7 +96,7 @@
           >
             <div class="sleep-timer-panel-head">
               <h2 class="sleep-timer-title">Sleep timer</h2>
-              <p class="sleep-timer-status" id="sleep-timer-status">Off — session only</p>
+              <p class="sleep-timer-status" id="sleep-timer-status" hidden></p>
             </div>
 
             <div class="sleep-timer-modes" role="tablist" aria-label="Timer mode">
@@ -106,7 +106,7 @@
             </div>
 
             <div class="sleep-timer-body" data-panel="time">
-              <p class="sleep-timer-hint">Stop after a duration (wall clock keeps running while paused)</p>
+              <p class="sleep-timer-hint">Stop after a duration</p>
               <div class="sleep-chip-row" id="sleep-time-presets">
                 <button type="button" class="sleep-chip" data-minutes="15">15m</button>
                 <button type="button" class="sleep-chip" data-minutes="30">30m</button>
@@ -122,7 +122,7 @@
             </div>
 
             <div class="sleep-timer-body" data-panel="songs" hidden>
-              <p class="sleep-timer-hint">Stop after this many songs finish (skips count too). Aligned with time presets at ~3 min/song.</p>
+              <p class="sleep-timer-hint">Stop after a number of songs</p>
               <div class="sleep-chip-row" id="sleep-song-presets">
                 <button type="button" class="sleep-chip" data-songs="5">5</button>
                 <button type="button" class="sleep-chip" data-songs="10">10</button>
@@ -138,7 +138,7 @@
             </div>
 
             <div class="sleep-timer-body" data-panel="queue" hidden>
-              <p class="sleep-timer-hint">Play through the current queue once, then stop (works in Random or Loop)</p>
+              <p class="sleep-timer-hint">Stop after the current selection</p>
             </div>
 
             <div class="sleep-timer-actions">
@@ -390,10 +390,10 @@
 
     <p class="shortcuts-hint">
       <kbd>Space</kbd> play/pause
-      <kbd>←</kbd><kbd>→</kbd> seek
+      <kbd>←</kbd><kbd>→</kbd> ±5s
       <kbd>N</kbd> next
       <kbd>P</kbd> prev
-      <kbd>/</kbd> search
+      <kbd>M</kbd> random/loop
       <kbd>L</kbd> lyrics
       <kbd>T</kbd> theme
       <kbd>S</kbd> sleep timer

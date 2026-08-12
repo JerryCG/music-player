@@ -89,7 +89,9 @@
   }
 
   function statusText() {
-    if (!isActive()) return 'Off — session only';
+    // When idle, leave status blank — title + Start already explain the panel.
+    // "session only" is an implementation detail users do not need.
+    if (!isActive()) return '';
     // Always show remaining time/songs (including during volume fade)
     if (activeMode === 'time') return formatCountdown(remainingMs()) + ' left';
     if (activeMode === 'songs') {
@@ -121,12 +123,20 @@
     var startBtn = $('sleep-timer-start');
     var cancelBtn = $('sleep-timer-cancel');
 
-    if (status) status.textContent = statusText();
+    if (status) {
+      var st = statusText();
+      status.textContent = st;
+      status.hidden = !st;
+    }
 
     if (btn) {
       btn.classList.toggle('is-active', isActive());
-      btn.setAttribute('aria-label', isActive() ? 'Sleep timer — ' + statusText() : 'Sleep timer');
-      btn.title = isActive() ? 'Sleep timer — ' + statusText() : 'Sleep timer';
+      var activeLabel = statusText();
+      btn.setAttribute(
+        'aria-label',
+        isActive() && activeLabel ? 'Sleep timer — ' + activeLabel : 'Sleep timer'
+      );
+      btn.title = isActive() && activeLabel ? 'Sleep timer — ' + activeLabel : 'Sleep timer';
     }
 
     if (badge) {
