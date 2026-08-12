@@ -1275,6 +1275,33 @@
     return queue.slice();
   }
 
+  /**
+   * How many tracks remain in the *current* play-through, including the song
+   * now playing. Used by sleep timer “end of selection”:
+   *  - Loop: from queueIndex to the end of the catalog order
+   *  - Random: from shufflePos to the end of this shuffle pass (not the next reshuffle)
+   * @returns {number}
+   */
+  function getRemainingInSession() {
+    if (!queue.length) return 0;
+    if (mode === 'Random') {
+      if (!ensureShuffleReady()) return queue.length;
+      var pos = shufflePos;
+      if (pos < 0) pos = 0;
+      if (pos >= shuffleOrder.length) return 1;
+      return shuffleOrder.length - pos;
+    }
+    // Loop (sequential order)
+    var idx = queueIndex;
+    if (idx < 0 && currentTrack) {
+      idx = queue.findIndex(function (t) {
+        return t.id === currentTrack.id;
+      });
+    }
+    if (idx < 0) return queue.length;
+    return Math.max(0, queue.length - idx);
+  }
+
   function isPlaying() {
     return audio && !audio.paused && !audio.ended;
   }
@@ -1388,6 +1415,7 @@
     getAudio,
     getMode,
     getQueue,
+    getRemainingInSession,
     isPlaying,
     updateModeUI,
     restore,

@@ -98,7 +98,9 @@
       return songsLeft === 1 ? '1 song left' : songsLeft + ' songs left';
     }
     if (activeMode === 'queue') {
-      return songsLeft === 1 ? '1 song left (end of queue)' : songsLeft + ' songs left (end of queue)';
+      return songsLeft === 1
+        ? '1 song left in selection'
+        : songsLeft + ' songs left in selection';
     }
     return 'On';
   }
@@ -331,16 +333,25 @@
       deadlineMs = 0;
       MPUtils.toast('Sleep timer: ' + n + (n === 1 ? ' song' : ' songs'));
     } else {
-      var q = (window.MPPlayer && MPPlayer.getQueue && MPPlayer.getQueue()) || [];
-      var len = q.length || 0;
-      if (!len) {
-        MPUtils.toast('Queue is empty');
+      // Remaining from the current track through the end of this play-through
+      // (Loop: catalog tail; Random: rest of the current shuffle list).
+      var rem = 0;
+      if (window.MPPlayer && typeof MPPlayer.getRemainingInSession === 'function') {
+        rem = MPPlayer.getRemainingInSession();
+      } else {
+        var q = (window.MPPlayer && MPPlayer.getQueue && MPPlayer.getQueue()) || [];
+        rem = q.length || 0;
+      }
+      if (!rem) {
+        MPUtils.toast('Nothing left in selection');
         return;
       }
       activeMode = 'queue';
-      songsLeft = len;
+      songsLeft = rem;
       deadlineMs = 0;
-      MPUtils.toast('Sleep timer: end of queue (' + len + ')');
+      MPUtils.toast(
+        'Sleep timer: ' + rem + (rem === 1 ? ' song left in selection' : ' songs left in selection')
+      );
     }
 
     fading = false;
