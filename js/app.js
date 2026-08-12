@@ -350,6 +350,12 @@
       const typing =
         tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable;
 
+      // Focus search (same idea as many sites: type to find)
+      if (e.key === '/' && !typing) {
+        e.preventDefault();
+        MPSearch.focus();
+        return;
+      }
       if (typing) return;
 
       switch (e.key) {

@@ -15,7 +15,7 @@ Personal music collection player for [JerryCG](https://github.com/JerryCG). Audi
 - Progress bar, volume, beat visualizer, dynamic disc art
 - PWA installable shell (service worker caches app assets only, not MP3s)
 - Deep links: `?id=12`
-- Keyboard shortcuts: Space, ←/→ (±5s), N/P, M (random/loop), L, T, S
+- Keyboard shortcuts: Space, ←/→ (±5s), N/P, M (random/loop), `/` search, L, T, S
 
 ## Audio delivery (ORB fix)
 
