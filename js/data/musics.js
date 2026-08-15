@@ -876,7 +876,8 @@ function getMusics() {
     {id:873,name:"Part 9 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part9_douglasholmquist.mp3"},
     {id:874,name:"Part 10 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part10_douglasholmquist.mp3"},
     {id:875,name:"Part 11 - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"part11_douglasholmquist.mp3"},
-    {id:876,name:"Endless - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"endless_douglasholmquist.mp3"}
+    {id:876,name:"Endless - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"endless_douglasholmquist.mp3"},
+    {id:877,name:"小宇",artist:"张震岳",genre:"Chinese Pop",file:"xiaoyu_zhangzhenyue.mp3"}
   ];
 }
 

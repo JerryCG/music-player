@@ -6033,6 +6033,13 @@ function getMusics() {
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/endless_douglasholmquist.mp3?raw=true",
             name:"Endless - Smash Hit OST",
             artist:"Douglas Holmquist"
+        },
+        {
+            id:877,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/xiaoyu_zhangzhenyue.mp3?raw=true",
+            name:"小宇",
+            artist:"张震岳"
         }
     ]
 }

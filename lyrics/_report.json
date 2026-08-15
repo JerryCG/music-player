@@ -1,6 +1,6 @@
 {
-    "total":  867,
-    "ok":  815,
+    "total":  868,
+    "ok":  816,
     "skip_existing":  6,
     "miss":  52,
     "by_source":  {
@@ -7755,7 +7755,16 @@
                       "status":  "ok",
                       "source":  "manual",
                       "meta":  "instrumental-placeholder"
+                  },
+                  {
+                      "id":  877,
+                      "name":  "小宇",
+                      "artist":  "张震岳",
+                      "file":  "xiaoyu_zhangzhenyue.lrc",
+                      "status":  "ok",
+                      "source":  "lrclib",
+                      "meta":  "lrclib:17221"
                   }
               ],
-    "updated_at":  "2026-08-10T09:22:33"
+    "updated_at":  "2026-08-15T00:53:31"
 }
