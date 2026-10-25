@@ -1,6 +1,6 @@
 {
-    "total":  872,
-    "ok":  820,
+    "total":  873,
+    "ok":  821,
     "skip_existing":  6,
     "miss":  52,
     "by_source":  {
@@ -7800,8 +7800,17 @@
                       "status":  "ok",
                       "source":  "qq",
                       "meta":  "netease:no-match | qq:105588269:score=116"
+                  },
+                  {
+                      "id":  882,
+                      "name":  "【GrandChase 永恆冒險】主題曲(全)",
+                      "artist":  "Korean Artists",
+                      "file":  "grandchase_koreanartists.lrc",
+                      "status":  "ok",
+                      "source":  "manual",
+                      "meta":  "instrumental-placeholder"
                   }
               ],
-    "updated_at":  "2026-10-24T17:53:00"
+    "updated_at":  "2026-10-24T18:23:00"
 }
 

@@ -6068,6 +6068,13 @@ function getMusics() {
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/hongshanguo_anyuqibing.mp3?raw=true",
             name:"红山果",
             artist:"安与骑兵"
+        },
+        {
+            id:882,
+            genre:"Korean Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/grandchase_koreanartists.mp3?raw=true",
+            name:"【GrandChase 永恆冒險】主題曲(全)",
+            artist:"Korean Artists"
         }
     ]
 }
