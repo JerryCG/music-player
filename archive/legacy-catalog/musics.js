@@ -6061,6 +6061,13 @@ function getMusics() {
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/duju_zhuiminglinqin.mp3?raw=true",
             name:"ギャンブル（赌局）",
             artist:"椎名林檎"
+        },
+        {
+            id:881,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/hongshanguo_anyuqibing.mp3?raw=true",
+            name:"红山果",
+            artist:"安与骑兵"
         }
     ]
 }

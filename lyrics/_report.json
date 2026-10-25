@@ -1,13 +1,13 @@
 {
-    "total":  871,
-    "ok":  819,
+    "total":  872,
+    "ok":  820,
     "skip_existing":  6,
     "miss":  52,
     "by_source":  {
                       "netease":  53,
                       "lrclib":  27,
                       "kugou":  253,
-                      "qq":  465
+                      "qq":  466
                   },
     "items":  [
                   {
@@ -7791,8 +7791,17 @@
                       "status":  "ok",
                       "source":  "qq",
                       "meta":  "netease:no-match | qq:194397:score=116"
+                  },
+                  {
+                      "id":  881,
+                      "name":  "红山果",
+                      "artist":  "安与骑兵",
+                      "file":  "hongshanguo_anyuqibing.lrc",
+                      "status":  "ok",
+                      "source":  "qq",
+                      "meta":  "netease:no-match | qq:105588269:score=116"
                   }
               ],
-    "updated_at":  "2026-10-24T17:42:00"
+    "updated_at":  "2026-10-24T17:53:00"
 }
 
