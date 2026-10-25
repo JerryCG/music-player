@@ -1,13 +1,13 @@
 {
-    "total":  869,
-    "ok":  817,
+    "total":  870,
+    "ok":  818,
     "skip_existing":  6,
     "miss":  52,
     "by_source":  {
                       "netease":  53,
                       "lrclib":  27,
                       "kugou":  253,
-                      "qq":  463
+                      "qq":  464
                   },
     "items":  [
                   {
@@ -7773,7 +7773,16 @@
                       "status":  "ok",
                       "source":  "manual",
                       "meta":  "yymp3-timed"
+                  },
+                  {
+                      "id":  879,
+                      "name":  "自由的你",
+                      "artist":  "邓紫棋",
+                      "file":  "ziyoudeni_dengziqi.lrc",
+                      "status":  "ok",
+                      "source":  "qq",
+                      "meta":  "netease:no-match | qq:726476108:score=101"
                   }
               ],
-    "updated_at":  "2026-08-25T11:17:51"
+    "updated_at":  "2026-10-24T17:23:54"
 }

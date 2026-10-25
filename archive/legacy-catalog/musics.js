@@ -6047,6 +6047,13 @@ function getMusics() {
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/aishangzhangwuji_maoamin.mp3?raw=true",
             name:"爱上张无忌",
             artist:"毛阿敏"
+        },
+        {
+            id:879,
+            genre:"Chinese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/ziyoudeni_dengziqi.mp3?raw=true",
+            name:"自由的你",
+            artist:"邓紫棋"
         }
     ]
 }
