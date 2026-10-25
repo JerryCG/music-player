@@ -879,7 +879,8 @@ function getMusics() {
     {id:876,name:"Endless - Smash Hit OST",artist:"Douglas Holmquist",genre:"Electronic",file:"endless_douglasholmquist.mp3"},
     {id:877,name:"小宇",artist:"张震岳",genre:"Chinese Pop",file:"xiaoyu_zhangzhenyue.mp3"},
     {id:878,name:"爱上张无忌",artist:"毛阿敏",genre:"Chinese Pop",file:"aishangzhangwuji_maoamin.mp3"},
-    {id:879,name:"自由的你",artist:"邓紫棋",genre:"Chinese Pop",file:"ziyoudeni_dengziqi.mp3"}
+    {id:879,name:"自由的你",artist:"邓紫棋",genre:"Chinese Pop",file:"ziyoudeni_dengziqi.mp3"},
+    {id:880,name:"ギャンブル（赌局）",artist:"椎名林檎",genre:"Japanese Pop",file:"duju_zhuiminglinqin.mp3"}
   ];
 }
 

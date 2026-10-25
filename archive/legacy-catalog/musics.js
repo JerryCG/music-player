@@ -6054,6 +6054,13 @@ function getMusics() {
             src:"https://github.com/JerryCG/music-collection-db/blob/main/music/ziyoudeni_dengziqi.mp3?raw=true",
             name:"自由的你",
             artist:"邓紫棋"
+        },
+        {
+            id:880,
+            genre:"Japanese Pop",
+            src:"https://github.com/JerryCG/music-collection-db/blob/main/music/duju_zhuiminglinqin.mp3?raw=true",
+            name:"ギャンブル（赌局）",
+            artist:"椎名林檎"
         }
     ]
 }
